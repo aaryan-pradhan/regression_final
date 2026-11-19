@@ -68,6 +68,17 @@
 \tcolorboxenvironment{lemma}{slm,colback=thmc!5,colframe=thmc!75}
 \tcolorboxenvironment{corollary}{slm,colback=thmc!5,colframe=thmc!75}
 \tcolorboxenvironment{example}{slm,colback=exc!4,colframe=exc!60}
+% A box never starts in the last few lines of a page (its title would sit alone there): the needspace trick, skipped right after a heading.
+\makeatletter\newcommand{\keepwithnext}[1]{\par\if@nobreak\else\begingroup\setlength{\dimen@}{#1}\vskip\z@\@plus\dimen@\penalty-100\vskip\z@\@plus-\dimen@\vskip\dimen@\penalty9999\vskip-\dimen@\vskip\z@skip\endgroup\fi}\makeatother
+\AddToHook{env/definition/before}{\keepwithnext{7\baselineskip}}
+\AddToHook{env/theorem/before}{\keepwithnext{7\baselineskip}}
+\AddToHook{env/result/before}{\keepwithnext{7\baselineskip}}
+\AddToHook{env/lemma/before}{\keepwithnext{7\baselineskip}}
+\AddToHook{env/corollary/before}{\keepwithnext{7\baselineskip}}
+\AddToHook{env/example/before}{\keepwithnext{7\baselineskip}}
+% a heading needs room for itself and the start of what follows (a breakable box after it can otherwise strand it)
+\AddToHook{cmd/section/before}{\keepwithnext{10\baselineskip}}
+\AddToHook{cmd/subsection/before}{\keepwithnext{8\baselineskip}}
 
 \newtcolorbox{question}{slm,colback=exc!3,colframe=exc!50,title={The question},fonttitle=\bfseries\small}
 \newtcolorbox{setup}[1][Setup]{slm,colback=defc!2,colframe=defc!45,title={#1},fonttitle=\bfseries\small}
