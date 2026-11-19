@@ -115,7 +115,7 @@ Macros live in `preamble.tex` (`\E`, `\Var`, `\Cov`, `\tr`, `\rank`, `\argmin`, 
 | 3 | Sampling distributions & CIs | χ², t, F defined; CIs for μ (σ known/unknown) and σ²; election sample size (Chebyshev vs CLT) | old 03; BDA 74–81; RTSM 208–209, 277–278, 389–390; fin_econ 03 | accepted |
 | 4 | Hypothesis testing | H₀/H₁, Type I/II, α, power, z/t one- and two-sample, pooled t, χ² goodness of fit | old 04; BDA 82–89; RTSM 408–409 | drafted |
 | **II** | **The learning view of regression** | | | |
-| 5 | Statistical learning | S → h_S; supervised/unsupervised; regression = E_{y|x}[y]; linear in β vs not; simulation; curse of dimensionality | old 05; BDA 89–94, 114–115; RTSM 136–157 | todo |
+| 5 | Statistical learning | S → h_S; supervised/unsupervised; regression = E_{y|x}[y]; linear in β vs not; simulation; curse of dimensionality | old 05; BDA 89–94, 114–115; RTSM 136–157 | drafted |
 | 6 | Bias–variance decomposition | theorem, proof (S5 path), four examples | old 06; BDA 95–103 | todo |
 | **III** | **Linear algebra & random vectors** | | | |
 | 7 | Vector spaces → projections | subspace, span, basis, S⊥, P_S idempotent with eigenvalues 0/1, C(A) facts, C(AAᵀ)=C(A), rank, g-inverse, A(AᵀA)⁻Aᵀ | RTSM 64–76, 210–222, 354–366 | todo |
