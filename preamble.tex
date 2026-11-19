@@ -59,6 +59,7 @@
 % amsthm's proof, with "Proof." on its own line
 \makeatletter
 \renewenvironment{proof}[1][\proofname]{\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\itshape#1\@addpunct{.}]\mbox{}\par\nobreak}{\popQED\endtrivlist\@endpefalse}
+\renewcommand{\qedsymbol}{\ensuremath{\square}}% a text glyph, so tools/layout.py can see a stranded QED
 \makeatother
 
 \tcbset{slm/.style={enhanced,before upper={\setlength{\parskip}{0.55em}},breakable,boxrule=0.5pt,arc=1.5pt,left=6pt,right=6pt,top=4pt,bottom=4pt,before skip=10pt,after skip=10pt}}

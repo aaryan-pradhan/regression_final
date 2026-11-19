@@ -4,6 +4,7 @@
 #   make                  deps (first time only) + build + log gate + order check + VERIFY + open the PDF
 #   make build check      the same without VERIFY and without opening (use while writing)
 #   make review CH=01     build only chapter 01 and render its pages to build/review/
+#   make layout          after make review: flag pages ending in a heading or starting with a lone QED
 #   make source P=95-113  render source pages as images to build/source/  (C=name picks SRC_name)
 #   make verify           run the book's own number checks (VERIFY in book.mk), if any
 #   make test             check.py must pass tests/good and fail each tests/bad-* with its expected message
@@ -16,7 +17,7 @@ include book.mk
 TEX     := pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build
 TEXPKGS := tcolorbox tikzfill pdfcol cleveref enumitem environ trimspaces thmtools pgfplots
 
-.PHONY: all build check verify review source test open clean
+.PHONY: all build check verify review layout source test open clean
 
 all: build check verify open
 
@@ -51,6 +52,9 @@ review: build
 	pdftoppm -r 80 -png build/review.pdf build/review/p
 	@echo "review: $$(ls build/review | wc -l | tr -d ' ') pages in build/review/"
 
+layout:
+	pdftotext -layout build/review.pdf - | python3 tools/layout.py
+
 source:
 	@test -n "$(P)" || (echo 'usage: make source P=95-113 [C=name]'; exit 1)
 	rm -rf build/source && mkdir -p build/source
@@ -63,7 +67,9 @@ test:
 	  out=$$(BANNED=Forbidden python3 tools/check.py $$d); rc=$$?; \
 	  if [ -f $$d/expect ]; then [ $$rc = 1 ] && echo "$$out" | grep -qF "$$(cat $$d/expect)"; else [ $$rc = 0 ]; fi \
 	    && echo "ok   $$d" || { echo "FAIL $$d: $$out"; fail=1; }; \
-	done; exit $$fail
+	done; \
+	python3 tools/layout.py < tests/layout-bad.txt | grep -q 'lone QED' && echo 'ok   tests/layout-bad.txt' || { echo 'FAIL tests/layout-bad.txt'; fail=1; }; \
+	exit $$fail
 
 open: build
 	open build/main.pdf
