@@ -26,7 +26,7 @@ This file is the whole plan for the book. Every chapter session reads it first, 
 | D11 | **Errors in the notes** | Corrected silently in the text (list in §8). No footnotes. |
 | D12 | **Numbers** | python3 recomputes every number in the book before it is shown. |
 | D13 | **The web complements the notes** | Standard texts fill gaps (exam-only topics), verify corrections and theorem conditions. They never override the notes' notation; they are translated into it. No citations in the book. Texts: Weinberger CS4780 and ESL (learning), Montgomery–Peck–Vining and Sengupta & Jammalamadaka (linear models), Johnson & Wichern (multivariate, PCA), Brockwell & Davis and Shumway & Stoffer (time series), Wooldridge and Greene (heteroskedasticity, DW, GLS, logit, probit, Tobit), Casella & Berger (estimation). |
-| D14 | **One chapter per session** | `/clear`, then `/euclid-book`, following §7. The user reviews each chapter before the next starts. |
+| D14 | **One block per session** | `/clear`, then `/euclid-book`, following §7 and §11. A block is 2–5 chapters (§11); the user reviews each block before the next starts. (19 Nov 2026, to cut token cost; was one chapter per session.) |
 
 ## 3. How a derivation is written (D5)
 
@@ -108,11 +108,11 @@ Macros live in `preamble.tex` (`\E`, `\Var`, `\Cov`, `\tr`, `\rank`, `\argmin`, 
 
 | # | Chapter | Contents | Write from | Status |
 |---|---|---|---|---|
-| 0 | Front matter | assumed-probability box (D10), notation table (§5), how to read a two-column derivation | src/old/chapters/00 | drafted |
+| 0 | Front matter | assumed-probability box (D10), notation table (§5), how to read a two-column derivation | src/old/chapters/00 | accepted |
 | **I** | **Inference foundations** | | | |
-| 1 | Population, sample, likelihood, MLE | statistic, likelihood, MLE for Bernoulli, Exp, N, Binomial; support depends on θ: U(θ,2θ), uniform, triangular, two-value MLE examples | old 01; BDA 64–66; RTSM 275–276, 387–388; FE gen 05; fin_econ 04–07; papers/MLE practice | drafted |
-| 2 | Properties of estimators | unbiasedness (x̄; the 1/(n−1) proof; Σaᵢ² ≥ 1/n), bias, MSE = Var + Bias², consistency, method of moments (Gamma) | old 02; BDA 67–73; RTSM 272–274, 384–386; stats training 60–72; fin_econ 01 | drafted |
-| 3 | Sampling distributions & CIs | χ², t, F defined; CIs for μ (σ known/unknown) and σ²; election sample size (Chebyshev vs CLT) | old 03; BDA 74–81; RTSM 208–209, 277–278, 389–390; fin_econ 03 | drafted |
+| 1 | Population, sample, likelihood, MLE | statistic, likelihood, MLE for Bernoulli, Exp, N, Binomial; support depends on θ: U(θ,2θ), uniform, triangular, two-value MLE examples | old 01; BDA 64–66; RTSM 275–276, 387–388; FE gen 05; fin_econ 04–07; papers/MLE practice | accepted |
+| 2 | Properties of estimators | unbiasedness (x̄; the 1/(n−1) proof; Σaᵢ² ≥ 1/n), bias, MSE = Var + Bias², consistency, method of moments (Gamma) | old 02; BDA 67–73; RTSM 272–274, 384–386; stats training 60–72; fin_econ 01 | accepted |
+| 3 | Sampling distributions & CIs | χ², t, F defined; CIs for μ (σ known/unknown) and σ²; election sample size (Chebyshev vs CLT) | old 03; BDA 74–81; RTSM 208–209, 277–278, 389–390; fin_econ 03 | accepted |
 | 4 | Hypothesis testing | H₀/H₁, Type I/II, α, power, z/t one- and two-sample, pooled t, χ² goodness of fit | old 04; BDA 82–89; RTSM 408–409 | todo |
 | **II** | **The learning view of regression** | | | |
 | 5 | Statistical learning | S → h_S; supervised/unsupervised; regression = E_{y|x}[y]; linear in β vs not; simulation; curse of dimensionality | old 05; BDA 89–94, 114–115; RTSM 136–157 | todo |
@@ -159,7 +159,13 @@ Cohesion lives in files, not in a conversation: `/clear` between chapters is saf
    - Open with one plain sentence that picks up where the previous chapter ended, in words.
    - Same symbols as §5, always. A result from an earlier chapter is restated in full in the reason column where it is used (D6).
 5. **Gate:** `make build check` gives 0 errors, 0 overfull boxes, `check: 0 violations`. Recompute every number with python3.
-6. **Look:** `make review CH=NN` and read every page image in `build/review/`; fix what you see.
+6. **Look:** `make review CH=NN && make layout`; read the pages `make layout` flags plus the chapter's first page, fix them and rebuild.
+6a. **Content review, once, at the end (never skipped: the content matters most).** Read every rendered page of the chapter and check:
+   - *Simple:* plain short sentences; every symbol named at first use; one operation per deriv row, no skipped step; every reason quotes its rule in full; nothing harder than the line needs.
+   - *Framed per this plan:* the opening sentence picks up the previous chapter; setup box first (S1); D4 shape per idea; the notes' order and derivation path (D2, S5); §5 notation; every `\E`, `\Var`, `\Cov` subscripted (S3); indicators and matrices (D9); regression given 𝕏 (S6); no meta-text, no links, nothing beyond the source.
+   - *Complete:* every item in the row's Contents column; every exam question in Write from is a boxed example.
+   - *Correct:* each row follows from the one above; theorem conditions stated; numbers match the python3 check.
+   Fix, rebuild, rerun the gates; reread only pages a big fix changed. The hand-over line says the pass was done and what it changed.
 7. **Hand over:** one line: chapter, page count, 2–3 things worth knowing. He reads it with `make open`.
 8. **Revise** on his comments (at most 3 passes before asking what is still wrong). Every comment goes into `LESSONS.md` the same turn. Set the status to `accepted` on his yes.
 9. **Commit** after each small step (section written, feedback fix); push when the chapter is accepted.
@@ -195,3 +201,31 @@ All sources are in `src/` (gitignored, local only).
 ## 10. Done when
 
 Every row in §6 is `accepted`; `make pdf` builds the whole book with 0 errors, 0 overfull boxes and `check: 0 violations`; every scan page in §8 is covered, marked duplicate, or marked OUT.
+
+## 11. Writing the rest (plan of 19 Nov 2026, chapters 0–3 accepted)
+
+**Goal:** chapters 4–28 at minimum token cost. Text before images; a script before page images; one block per session.
+
+**Text sources** (grep them; open a scan page only to settle one step, `make source C=… P=n-n`):
+| Source | Chapters |
+|---|---|
+| `src/old/chapters/04–06.tex` | 4, 5, 6 |
+| `src/text/big_data_analysis_notes.md` (secs 10–33) | 4, 5, 6, 8, 10, 12, 15, 19 |
+| `src/text/regression_complete.md` (A–J: algebra, random vectors, MLR, estimability, inference, correlation model, PCA) | 7, 9–19 |
+| `src/fin_econ/08–13, 19, 20.tex` | 12, 26, 27, 28, 19, 21 |
+| `src/text/rtsm_text.txt` (rtsm text-layer pages) | spot checks |
+| `src/text/rtsm_ts.md`, `src/text/rtsm_qf.md`, `src/text/fe_scans.md` (Sonnet transcriptions) | 20–25; 7, 9, 11; 26–28 |
+| exam papers, `src/text/*solutions*.md` | boxed examples |
+
+**Session 0 (setup, no chapters)** — status: todo.
+1. HTML → text, zero tokens: stdlib `html.parser` turns each `src/solutions/*.html` into `src/text/<name>.md` (headings kept, MathJax kept as LaTeX); `pdftotext` writes rtsm text-layer pages to `src/text/rtsm_text.txt` with `## p<N>` markers. No script kept.
+2. Sonnet transcription: 3 background agents (`model: sonnet`), one per block: RTSM time series p450–499 → `rtsm_ts.md`; RTSM quadratic forms p88–93, 234–239, 374–383 plus algebra pages not in `regression_complete` B → `rtsm_qf.md`; `fe_general_full` p3–10, `fe_slides` p1–16, `fin_econ.pdf` p36–42 → `fe_scans.md`. Each renders its own pages with `pdftoppm` into its scratch dir and writes one `## p<N>` per page: faithful, LaTeX maths, no rewording, `[?]` where illegible, duplicates/OUT per §8. Spot-check 2 pages per block against the image.
+3. `tools/layout.py` + `make layout`, written in the skill template first, then copied here: `pdftotext -layout build/review.pdf` page by page; flag a page whose last line is a box title (`^(Definition|Theorem|Result|Lemma|Corollary|Example) \d+\.\d+`) or a section heading, and a page that starts with a lone QED. Must be silent on chapters 1–3 and catch one hand-made bad case.
+4. Commit each step, push.
+
+**Blocks** (one session each): 4–6 · 7–8 · 9–11 · 12–14 · 15–18 · 19 · 20–22 · 23–25 · 26–28.
+
+**Per chapter:** §7 steps, plus: write the chapter in one `Write`, right the first time (2+ `=` in `deriv`/`aligned`; long rows start `\quad=`; a proof ending in a deriv puts `\qedhere` in its last reason; no bare `\E`); gates as `make build check 2>&1 | grep -E '^(build|check)|Overfull|^!'`; fixes by small scripted replacements; all numbers in one python3 call (stdlib, no scipy).
+
+**Cost guards:** `grep -n` then `sed -n 'a,bp'`, never `cat` a large file; pipe every `make` through `tail`/`grep`; no re-reading after edits; no subagents in chapter sessions; suggest `/handoff` past ~120k tokens.
+
