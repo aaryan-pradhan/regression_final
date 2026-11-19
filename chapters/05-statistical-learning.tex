@@ -1,0 +1,213 @@
+\chapter{Statistical learning}
+
+Chapters~1--4 estimated and tested one parameter of $F$; now the sample goes into a machine, and a prediction rule comes out.
+
+Data are big in two ways: in size (many observations) and in complexity (many variables). Things get interesting when the complexity is large compared with the size; there even a lot of data may not be enough.
+
+\begin{setup}
+Population $F_{\vect{x},y}$, the joint law of a random vector $\vect{x}=(x_1,\dots,x_k)\T$ and a random variable $y$; sample $S=\{(\vect{x}_1,y_1),\dots,(\vect{x}_n,y_n)\}\sim F^n_{\vect{x},y}$, iid. Goal: come up with a prediction rule $h_S$, using $S$, that predicts $y$ in terms of $\vect{x}$.
+\end{setup}
+
+%=====================================================================
+\section{From estimation to learning}
+
+\begin{definition}[Learning algorithm]
+A \dfn{learning algorithm} turns every sample $S$ of size $n$ into a function
+\[
+  \boxed{\;y=h_S(\vect{x}).\;}
+\]
+$h_S$ is the \dfn{predictor} learned from $S$.
+\end{definition}
+
+$h_S$ depends on the sample, so it is random, exactly as an estimator $\hat\theta(S)$ was: another sample gives another rule. The subscript $S$ is always written, to show where the randomness comes from.
+
+\begin{definition}[Supervised and unsupervised learning]
+Learning comes in two kinds.
+\begin{itemize}
+  \item \dfn{Supervised learning}: one variable $y$ is singled out and the data are labelled pairs $(\vect{x}_i,y_i)$; population $F_{\vect{x},y}$, goal $y=h_S(\vect{x})$. Examples: regression (a numerical $y$); logistic regression (the probability that $y$ takes a value, given $\vect{x}$).
+  \item \dfn{Unsupervised learning}: no variable is singled out, no labels; population $F_{x_1,\dots,x_p}$, goal: structure in it. Example: reducing many variables to a few directions (Part~V).
+\end{itemize}
+\end{definition}
+
+Data seen only as random vectors with many features are unstructured; graph data, with no natural node to start from, are structured.
+
+%=====================================================================
+\section{The regression function}
+
+If $F_{\vect{x},y}$ were known, the natural prediction at $\vect{x}$ is the average $y$ among units with that $\vect{x}$.
+
+\begin{definition}[Regression function]
+The \dfn{regression function} of $y$ on $\vect{x}$ is
+\[
+  \boxed{\;\bar y(\vect{x})=\E_{y\given\vect{x}}(y)=\int y\,f_{y\given\vect{x}}(y\given\vect{x})\,dy.\;}
+\]
+It may be a line, a curve, a plane or a surface; $y$ is always random, $\vect{x}$ random or fixed.
+\end{definition}
+
+\begin{theorem}[The regression function is the best predictor]
+For every function $g$ of $\vect{x}$,
+\[
+  \boxed{\;\E_{\vect{x},y}\big[(y-g(\vect{x}))^2\big]
+  =\underbrace{\E_{\vect{x},y}\big[(y-\bar y(\vect{x}))^2\big]}_{\text{Noise}}
+  +\E_{\vect{x}}\big[(\bar y(\vect{x})-g(\vect{x}))^2\big].\;}
+\]
+So $\E_{\vect{x},y}[(y-g(\vect{x}))^2]\ge\E_{\vect{x},y}[(y-\bar y(\vect{x}))^2]$, with equality only if $g=\bar y$ with probability one.
+\end{theorem}
+\begin{proof}
+Write $g$, $\bar y$ for $g(\vect{x})$, $\bar y(\vect{x})$.
+\begin{steps}
+  \item \emph{Add and subtract $\bar y$; expand.}
+  \begin{deriv}
+  \dl{\E_{\vect{x},y}\big[(y-g)^2\big]=\E_{\vect{x},y}\big[\big((y-\bar y)+(\bar y-g)\big)^2\big]}{add and subtract $\bar y$}
+  \dl{\quad=\E_{\vect{x},y}\big[(y-\bar y)^2\big]+\E_{\vect{x},y}\big[(\bar y-g)^2\big]+2\,\text{MT}}{$(a+b)^2=a^2+b^2+2ab$; linearity of expectation}
+  \dl{\quad=\E_{\vect{x},y}\big[(y-\bar y)^2\big]+\E_{\vect{x}}\big[(\bar y-g)^2\big]+2\,\text{MT}}{$(\bar y-g)^2$ is free of $y$}
+  \end{deriv}
+  with $\text{MT}=\E_{\vect{x},y}\big[(y-\bar y)(\bar y-g)\big]$.
+  \item \emph{Claim: $\text{MT}=0$.}
+  \begin{deriv}
+  \dl{\text{MT}=\E_{\vect{x}}\Big[\E_{y\given\vect{x}}\big((y-\bar y)(\bar y-g)\big)\Big]}{tower rule: $\E_{\vect{x},y}[\cdot]=\E_{\vect{x}}\big[\E_{y\given\vect{x}}(\cdot)\big]$}
+  \dl{\quad=\E_{\vect{x}}\Big[\underbrace{(\bar y-g)}_{\text{free of }y}\,\E_{y\given\vect{x}}(y-\bar y)\Big]}{pull out what is fixed given $\vect{x}$}
+  \dl{\quad=\E_{\vect{x}}\big[(\bar y-g)\,(\bar y-\bar y)\big]=0}{$\E_{y\given\vect{x}}(y)=\bar y(\vect{x})$}
+  \end{deriv}
+  \item \emph{Conclude.} The last term is an average of squares: $\ge0$, and $0$ only if $g=\bar y$ with probability one.\qedhere
+\end{steps}
+\end{proof}
+
+No rule built from $\vect{x}$ beats the Noise: two units with the same $\vect{x}$ can have different $y$. Noise belongs to the population, not to any sample.
+
+\begin{corollary}[Every population has a regression model]
+Let $\varepsilon=y-\bar y(\vect{x})$. Then always
+\[
+  \boxed{\;y=\bar y(\vect{x})+\varepsilon,\qquad\E_{y\given\vect{x}}(\varepsilon)=0,\;}
+\]
+and the Noise is $\E_{\vect{x},y}[\varepsilon^2]$.
+\end{corollary}
+\begin{proof}
+\begin{deriv}
+\dl{\E_{y\given\vect{x}}(\varepsilon)=\E_{y\given\vect{x}}(y)-\bar y(\vect{x})=0}{$\bar y(\vect{x})$ is fixed given $\vect{x}$; definition of $\bar y$\qedhere}
+\end{deriv}
+\end{proof}
+
+So ``signal $+$ error, error averaging to $0$ at every $\vect{x}$'' is not an assumption. Part~IV adds the real assumptions: $\bar y(\vect{x})$ linear, and $\varepsilon\given\vect{x}\sim N(0,\sigma^2)$.
+
+\begin{example}[A regression function that is not Normal]
+$x\sim U[0,1]$ and $y\given x\sim\text{Bernoulli}(x)$.
+\begin{deriv}
+\dl{\bar y(x)=\E_{y\given x}(y)=1\cdot x+0\cdot(1-x)=x}{a straight line, though $y\in\{0,1\}$}
+\dl{\E_{y\given x}\big[(y-x)^2\big]=\Var_{y\given x}(y)=x(1-x)}{Bernoulli$(x)$ variance}
+\dl{\text{Noise}=\E_x[x(1-x)]=\int_0^1(x-x^2)\,dx=\tfrac12-\tfrac13=\tfrac16}{tower rule; $x\sim U[0,1]$}
+\dl{g(x)=\tfrac12:\ \tfrac16+\E_x\big[(x-\tfrac12)^2\big]=\tfrac16+\tfrac1{12}=\tfrac14}{best-predictor identity; $\Var_x(x)=\frac1{12}$}
+\end{deriv}
+\end{example}
+
+%=====================================================================
+\section{What ``linear'' means}
+
+$\bar y$ is unknown. Guess a form $\bar y(\vect{x})=g(\vect{x},\vect{\beta})$ with unknown parameters $\vect{\beta}$, and estimate them from $S$.
+
+\begin{definition}[Linear regression]
+$\bar y(\vect{x})=g(\vect{x},\vect{\beta})$ is a \dfn{linear regression} if $g$ is linear in the \emph{parameters} $\vect{\beta}$; otherwise it is a \dfn{non-linear regression}.
+\end{definition}
+
+The test: fix $\vect{x}$; is $g$ then a linear combination of $\beta_0,\beta_1,\dots$?
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Model & Linear? & Why \\
+\midrule
+$y=\beta_0+\beta_1x+\varepsilon$ & yes & a straight line \\
+$y=\beta_0+\beta_1x+\beta_2x^2+\varepsilon$ & yes & a curve in $x$, linear in the $\beta$s \\
+$y=\beta_0+\beta_1\log x+\varepsilon$ & yes & $\log x$ is a known number once $x$ is fixed \\
+$y=\beta_0e^{\beta_1x}+\varepsilon$ & no & $\beta_1$ inside the exponential \\
+$y=\beta_0\cos(\beta_1+\beta_2x)+\varepsilon$ & no & $\beta_1,\beta_2$ inside the cosine \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{example}[Computing $g$ by free fall]
+A body dropped with initial speed $u$ falls $s=ut+\frac12gt^2$ in time $t$. With measurement error, $s_i=ut_i+\frac12gt_i^2+\varepsilon_i$: quadratic in $t$, linear in $(u,\frac g2)$. A linear regression, so $g$ is estimated by the methods of Part~IV.
+\end{example}
+
+The kinds of regression: linear models (simple, multiple, polynomial); generalised linear models (logit and probit for $y\in\{0,1\}$, Poisson for counts); others (isotonic, spline).
+
+%=====================================================================
+\section{Simulating data}
+
+To test a learning algorithm we need data from a known population. A computer gives (pseudo-)random numbers that behave like $U(0,1)$; everything else is built from them.
+
+\begin{theorem}[Probability integral transform]
+Let $F$ be a continuous, strictly increasing cdf. Then
+\[
+  \boxed{\;\text{(i) }U\sim U(0,1)\Rightarrow F^{-1}(U)\sim F;\qquad\text{(ii) }X\sim F\Rightarrow F(X)\sim U(0,1).\;}
+\]
+\end{theorem}
+\begin{proof}
+$F$ strictly increasing gives $a\le b\iff F(a)\le F(b)$, and $F^{-1}$ exists.
+\begin{deriv}
+\dl{P\big(F^{-1}(U)\le x\big)=P\big(U\le F(x)\big)=F(x)}{(i): apply $F$ to both sides; $P(U\le c)=c$ on $[0,1]$}
+\dl{P\big(F(X)\le u\big)=P\big(X\le F^{-1}(u)\big)=F\big(F^{-1}(u)\big)=u}{(ii): apply $F^{-1}$; $X$ has cdf $F$; the $U(0,1)$ cdf\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[Simulating a regression data set]
+Data from $y=c+mx+\varepsilon$, $x\sim U[0,1]$, Exponential$(\lambda)$ errors shifted to mean $0$.
+\begin{deriv}
+\dl{u=1-e^{-\lambda t}\iff F^{-1}(u)=-\tfrac1\lambda\log(1-u)}{Exponential cdf $F(t)=1-e^{-\lambda t}$; solve for $t$}
+\dl{-\tfrac1\lambda\log(1-U)\sim\text{Exponential}(\lambda)}{probability integral transform (i)}
+\dl{x=U_1,\ \ \varepsilon=-\tfrac1\lambda\log(1-U_2)-\tfrac1\lambda,\ \ y=c+mx+\varepsilon}{$U_1,U_2\iid U(0,1)$; subtract the mean $\frac1\lambda$}
+\end{deriv}
+Repeat $n$ times independently. The true $\bar y(x)=c+mx$ is known, so any learned $h_S$ can be compared with it.
+\end{example}
+
+A computer is deterministic, so its numbers are never truly random; a good generator is one that passes every statistical test of randomness.
+
+%=====================================================================
+\section{The curse of dimensionality}
+
+Take $p$ variables, each $U[0,1]$: $x_1,\dots,x_p$ iid $U[0,1]$ exactly when $\vect{x}$ is uniform on the cube $[0,1]^p$.
+
+\begin{result}[Three facts about the cube]
+Let $\vect{x},\vect{x}'$ be independent and uniform on $[0,1]^p$, and $0<\varepsilon<1$.
+\[
+  \boxed{\;\begin{aligned}
+  &\text{(i) the diagonal from }(0,\dots,0)\text{ to }(1,\dots,1)\text{ has length }\sqrt p;\\
+  &\text{(ii) }P_{\vect{x}}(\text{outer shell of thickness }\tfrac\varepsilon2)=1-(1-\varepsilon)^p\to1;\\
+  &\text{(iii) }\E_{\vect{x},\vect{x}'}\big[\|\vect{x}-\vect{x}'\|^2\big]=\tfrac p6,\ \ \tfrac1p\|\vect{x}-\vect{x}'\|^2\to\tfrac16\text{ in probability.}
+  \end{aligned}\;}
+\]
+\end{result}
+\begin{proof}
+The inner cube is $[\frac\varepsilon2,1-\frac\varepsilon2]^p$, of side $1-\varepsilon$; the outer shell is the rest.
+\begin{deriv}
+\dl{\|(1,\dots,1)\T-(0,\dots,0)\T\|=\sqrt{1+\dots+1}=\sqrt p}{(i): $\|\vect{v}\|^2=\sum_jv_j^2$}
+\dl{P_{\vect{x}}(\text{inner})=\prod_{j=1}^pP\big(x_j\in[\tfrac\varepsilon2,1-\tfrac\varepsilon2]\big)=(1-\varepsilon)^p}{(ii): independent coordinates; each interval has length $1-\varepsilon$}
+\dl{(1-\varepsilon)^p\to0}{$0<1-\varepsilon<1$}
+\dl{\E_{x_j,x'_j}\big[(x_j-x'_j)^2\big]=\Var_{x_j,x'_j}(x_j-x'_j)=\tfrac1{12}+\tfrac1{12}=\tfrac16}{(iii): $x_j-x'_j$ has mean $0$; independent: variances add; $U[0,1]$ variance $\frac1{12}$}
+\dl{\E_{\vect{x},\vect{x}'}\big[\|\vect{x}-\vect{x}'\|^2\big]=\sum_{j=1}^p\tfrac16=\tfrac p6}{linearity of expectation}
+\dl{\tfrac1p\sum_{j=1}^p(x_j-x'_j)^2\to\tfrac16}{WLLN: an average of $p$ iid terms with mean $\frac16$\qedhere}
+\end{deriv}
+\end{proof}
+
+With $\varepsilon=0.01$ the shell holds $0.10$ of the cube for $p=10$, $0.63$ for $p=100$, and essentially all of it ($1-0.99^{1000}\approx1$) for $p=1000$: a uniform point is almost surely near the boundary.
+
+\begin{example}[Distances between 200 random points]
+Simulate $200$ points uniform in $[0,1]^p$; compute all $19{,}900$ pairwise distances.
+\begin{center}
+\begin{tabular}{@{}rcccc@{}}
+\toprule
+$p$ & mean distance & $\sqrt{p/6}$ & standard deviation & nearest $\div$ farthest \\
+\midrule
+$1$ & $0.33$ & $0.41$ & $0.23$ & $0.00$ \\
+$10$ & $1.27$ & $1.29$ & $0.25$ & $0.18$ \\
+$100$ & $4.08$ & $4.08$ & $0.25$ & $0.61$ \\
+$1000$ & $12.92$ & $12.91$ & $0.25$ & $0.86$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+The mean grows like $\sqrt{p/6}$, as (iii) predicts; the spread stays near $0.25$. At $p=1000$ the closest pair is $86\%$ as far apart as the farthest.
+\end{example}
+
+As $p$ grows the histogram of distances moves right and becomes a narrow spike: all points are about equally far apart, and no two are close. Distance (any $L_q$ norm $(\sum_j|x_j|^q)^{1/q}$, e.g.\ $L_2$) stops measuring separation.
+
+The way out: real data rarely fill all $p$ dimensions. A cloud near the line $y=mx+c+\varepsilon$, $\varepsilon\sim N(0,\sigma^2)$ with $\sigma^2\ll1$, is written as $2$-vectors but is essentially $1$-dimensional. Finding such few directions is \dfn{dimension reduction}, done in Part~V.
