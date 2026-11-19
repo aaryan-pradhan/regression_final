@@ -1,0 +1,436 @@
+\chapter{Vector spaces and projections}
+
+Chapter~6 measured how far a learned rule falls from $\bar y$; to compute the rule for linear regression, the data are first written as vectors in $\R^n$, and this chapter builds the geometry of that space.
+
+\begin{setup}
+Data $\{(x_i,y_i)\}_{i=1}^n$ written as columns of $\R^n$: $\vect{y}=(y_1,\dots,y_n)\T$, $\vect{x}=(x_1,\dots,x_n)\T$, $\vect{1}=(1,\dots,1)\T$. The task: find the vector $\hat{\vect y}=\beta_0\vect{1}+\beta_1\vect{x}=[\vect{1}\ \vect{x}]\,\vect{\beta}$ closest to $\vect{y}$. Regression becomes a problem in $\R^n$.
+\end{setup}
+
+%=====================================================================
+\section{Vector spaces and subspaces}
+
+\begin{definition}[Vector space]
+A \dfn{vector space} $V$ over $\R$ is a set with an addition and a multiplication by numbers such that, for all $\vect{u},\vect{v},\vect{w}\in V$ and $a,b\in\R$, nine rules hold.
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.47\linewidth}p{0.47\linewidth}@{}}
+(1) closed: $a\vect{u}+b\vect{v}\in V$ & (2) $(\vect{u}+\vect{v})+\vect{w}=\vect{u}+(\vect{v}+\vect{w})$\\
+(3) a $\vect{0}\in V$ with $\vect{0}+\vect{v}=\vect{v}$ & (4) a $-\vect{v}\in V$ with $(-\vect{v})+\vect{v}=\vect{0}$\\
+(5) $\vect{u}+\vect{v}=\vect{v}+\vect{u}$ & (6) $a(b\vect{v})=(ab)\vect{v}$\\
+(7) $1\vect{v}=\vect{v}$ & (8) $(a+b)\vect{v}=a\vect{v}+b\vect{v}$\\
+(9) $a(\vect{u}+\vect{v})=a\vect{u}+a\vect{v}$ & \\
+\end{tabular}
+\end{center}
+\end{definition}
+
+\begin{example}[Vector spaces]
+$\R$; $\R^k$; the polynomials of degree at most $n$, $P_n=\big\{\sum_{i=0}^na_ix^i:\ a_i\in\R\big\}$; the continuous functions on $[a,b]$.
+\end{example}
+
+\begin{definition}[Subspace]
+A subset $S\subseteq V$ that is itself a vector space is a \dfn{subspace} of $V$. To check it, two tests suffice:
+\[
+  \boxed{\;\text{(i) }\vect{0}\in S;\qquad\text{(ii) }\vect{u}+a\vect{v}\in S\ \text{ for all }\vect{u},\vect{v}\in S,\ a\in\R.\;}
+\]
+\end{definition}
+
+\begin{example}[Subspaces]
+All lines through $(0,0)$ in $\R^2$; all planes through the origin in $\R^3$; $P_5$ in $P_7$; any $P_m$ in $P_n$ with $m\le n$.
+\end{example}
+
+\begin{result}[Intersections are subspaces; unions need not be]
+If $S_1$ and $S_2$ are subspaces of $V$, then $S_1\cap S_2$ is a subspace; $S_1\cup S_2$ need not be.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{\vect{0}\in S_1,\ \vect{0}\in S_2\ \Rightarrow\ \vect{0}\in S_1\cap S_2}{test (i) in each}
+\dl{\vect{u},\vect{v}\in S_1\cap S_2\ \Rightarrow\ \vect{u}+a\vect{v}\in S_1\text{ and }\in S_2}{test (ii) in each}
+\dl{\quad\Rightarrow\ \vect{u}+a\vect{v}\in S_1\cap S_2}{definition of $\cap$}
+\end{deriv}
+For the union, take $S_1$ the $x$-axis and $S_2$ the $y$-axis in $\R^2$: $(2,0)\in S_1$, $(0,2)\in S_2$, but $(2,0)+(0,2)=(2,2)$ lies on neither axis, so test (ii) fails.
+\end{proof}
+
+%=====================================================================
+\section{Span, independence, basis}
+
+\begin{definition}[Span]
+The \dfn{span} of $\vect{v}_1,\dots,\vect{v}_k\in V$ is the set of all their linear combinations:
+\[
+  \boxed{\;\Sp\{\vect{v}_1,\dots,\vect{v}_k\}=\Big\{\textstyle\sum_{i=1}^kc_i\vect{v}_i:\ c_i\in\R\Big\}.\;}
+\]
+\end{definition}
+
+\begin{result}[A span is always a subspace]
+$\Sp\{\vect{v}_1,\dots,\vect{v}_k\}$ is a subspace of $V$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{\vect{0}=\textstyle\sum_i0\,\vect{v}_i\in\Sp\{\vect{v}_1,\dots,\vect{v}_k\}}{test (i): all $c_i=0$}
+\dl{\textstyle\sum_ic_i\vect{v}_i+a\sum_id_i\vect{v}_i=\sum_i(c_i+ad_i)\vect{v}_i}{test (ii): collect terms; again a combination\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[Two spans]
+The first is all of $\R^2$; the second looks like $\R^2$ but is not.
+\begin{deriv}
+\dl{(a,b)=(b-a)(0,1)+a(1,1)}{so $\Sp\{(0,1),(1,1)\}=\Sp\{(0,1),(1,0)\}=\R^2$}
+\dl{a(0,1,0)+b(1,1,0)=(b,\,a+b,\,0)}{so $\Sp\{(0,1,0),(1,1,0)\}=\R\times\R\times\{0\}$}
+\end{deriv}
+$\R\times\R\times\{0\}$ is the $xy$-plane inside $\R^3$: it behaves like $\R^2$, but its vectors have three entries, so it is not $\R^2$.
+\end{example}
+
+\begin{definition}[Linear independence]
+$\vect{v}_1,\dots,\vect{v}_k$ are \dfn{linearly independent} if
+\[
+  \boxed{\;\textstyle\sum_{i=1}^kc_i\vect{v}_i=\vect{0}\ \Rightarrow\ c_1=\dots=c_k=0;\;}
+\]
+if the sum is $\vect{0}$ for some non-zero $c_i$, they are linearly dependent.
+\end{definition}
+
+\begin{example}[Independent or not]
+Three sets in $\R^2$.
+\begin{deriv}
+\dl{c_1(0,1)+c_2(1,1)=(c_2,\,c_1+c_2)=\vect{0}}{suppose a combination is $\vect{0}$}
+\dl{\quad\Rightarrow\ c_2=0,\ c_1=0}{$\{(0,1),(1,1)\}$ independent}
+\dl{c_1(0,1)+c_2(1,0)=(c_2,\,c_1)=\vect{0}\ \Rightarrow\ c_1=c_2=0}{$\{(0,1),(1,0)\}$ independent}
+\dl{(1,1)-(0,1)-(1,0)=\vect{0}}{$\{(0,1),(1,0),(1,1)\}$ dependent}
+\end{deriv}
+More than $n$ vectors with $n$ entries are always linearly dependent.
+\end{example}
+
+\begin{definition}[Basis, dimension]
+If $\vect{v}_1,\dots,\vect{v}_k$ are linearly independent, they are a \dfn{basis} of $\Sp\{\vect{v}_1,\dots,\vect{v}_k\}$. Every basis of a vector space $V$ has the same number of vectors, the \dfn{dimension of $V$}, $\dim V$.
+\end{definition}
+
+\begin{example}[Bases of $\R^2$]
+$\{(0,1),(1,1)\}$ and $\{(0,1),(1,0)\}$ are both bases of $\R^2$, so $\dim\R^2=2$; $\{(0,1),(1,0),(1,1)\}$ is not a basis (it is dependent). A basis is not unique, and its vectors need not be at right angles.
+\end{example}
+
+%=====================================================================
+\section{Orthogonality}
+
+\begin{definition}[Orthogonal vectors, orthogonal complement]
+$\vect{u},\vect{v}\in\R^n$ are \dfn{orthogonal vectors}, $\vect{u}\perp\vect{v}$, if
+\[
+  \boxed{\;\vect{u}\T\vect{v}=\textstyle\sum_iu_iv_i=0.\;}
+\]
+Orthogonal vectors of length $1$ are \dfn{orthonormal}; any $\vect{x}\ne\vect{0}$ is scaled to length $1$ by $\vect{x}/\|\vect{x}\|=\vect{x}/\sqrt{\vect{x}\T\vect{x}}$. For a subspace $S\subseteq V$, the \dfn{orthogonal complement} of $S$ is
+\[
+  \boxed{\;S^\perp=\{\vect{v}\in V:\ \vect{u}\T\vect{v}=0\ \text{ for every }\vect{u}\in S\}.\;}
+\]
+\end{definition}
+
+\begin{result}[Facts about $S^\perp$]
+For a subspace $S$ of $V=\R^n$, four facts hold; (c) and (d) are stated without proof.
+\begin{itemize}
+  \item[(a)] $S^\perp$ is a subspace.
+  \item[(b)] $S\cap S^\perp=\{\vect{0}\}$.
+  \item[(c)] $\dim S^\perp=\dim V-\dim S$.
+  \item[(d)] $(S^\perp)^\perp=S$.
+\end{itemize}
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{\vect{u}\T\vect{0}=0\ \Rightarrow\ \vect{0}\in S^\perp}{(a), test (i)}
+\dl{\vect{u}\T(\vect{v}+a\vect{w})=\vect{u}\T\vect{v}+a\,\vect{u}\T\vect{w}=0}{(a), test (ii): $\vect{v},\vect{w}\in S^\perp$, $\vect{u}\in S$}
+\dl{\vect{v}\in S\cap S^\perp\ \Rightarrow\ \vect{v}\T\vect{v}=0}{(b): $\vect{v}$ is orthogonal to every vector of $S$, itself included}
+\dl{\quad\Rightarrow\ \|\vect{v}\|^2=0\ \Rightarrow\ \vect{v}=\vect{0}}{$\|\vect{v}\|^2=\sum_iv_i^2$ is $0$ only if every $v_i=0$\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[Complements]
+Three pairs; in each the dimensions add up to $\dim V$.
+\begin{itemize}
+  \item In $\R^2$: $S$ the $x$-axis, $S^\perp$ the $y$-axis; $1+1=2$.
+  \item In $\R^4$: $\Sp\{(1,0,0,0),(0,0,1,0)\}^\perp=\Sp\{(0,1,0,0),(0,0,0,1)\}$; $2+2=4$.
+  \item In $\R^4$: $(1,1,0,0),(0,1,1,0),(1,0,1,0)$ are independent and span $\{\vect{v}:v_4=0\}$, whose complement is $\Sp\{(0,0,0,1)\}$; $3+1=4$.
+\end{itemize}
+\end{example}
+
+\begin{result}[Orthogonal implies independent]
+Non-zero, mutually orthogonal vectors $\vect{v}_1,\dots,\vect{v}_k$ are linearly independent. The converse fails.
+\end{result}
+\begin{proof}
+Suppose $\sum_ic_i\vect{v}_i=\vect{0}$; fix any $j$.
+\begin{deriv}
+\dl{0=\vect{v}_j\T\vect{0}=\vect{v}_j\T\textstyle\sum_ic_i\vect{v}_i}{multiply on the left by $\vect{v}_j\T$}
+\dl{\quad=\textstyle\sum_ic_i\,\vect{v}_j\T\vect{v}_i}{multiply out}
+\dl{\quad=c_j\,\|\vect{v}_j\|^2}{$\vect{v}_j\T\vect{v}_i=0$ for $i\ne j$}
+\dl{\Rightarrow\ c_j=0}{$\vect{v}_j\ne\vect{0}$, so $\|\vect{v}_j\|^2>0$}
+\end{deriv}
+For the converse: $(0,1)$ and $(1,1)$ are independent, but $(0,1)(1,1)\T=1\ne0$.
+\end{proof}
+
+%=====================================================================
+\section{Projection matrices}
+
+\begin{definition}[Projection matrix, orthogonal projection matrix]
+For a subspace $S\subseteq V$, a matrix $P_S$ is a \dfn{projection matrix} of $S$ if
+\[
+  \boxed{\;\text{(a) }P_S\vect{v}\in S\ \text{ for every }\vect{v}\in V;\qquad\text{(b) }P_S\vect{v}=\vect{v}\ \text{ for every }\vect{v}\in S.\;}
+\]
+It is the \dfn{orthogonal projection matrix} of $S$ if, in addition, $I-P_S$ is a projection matrix of $S^\perp$.
+\end{definition}
+
+\begin{example}[Projecting onto the $x$-axis]
+$V=\R^2$, $S$ the $x$-axis, $S^\perp$ the $y$-axis.
+\begin{deriv}
+\dl{P_S=\begin{pmatrix}1&0\\0&0\end{pmatrix},\quad P_S\begin{pmatrix}v_1\\v_2\end{pmatrix}=\begin{pmatrix}v_1\\0\end{pmatrix}\in S}{(a); and $(v_1,0)\T$ is sent to itself: (b)}
+\dl{I-P_S=\begin{pmatrix}0&0\\0&1\end{pmatrix},\quad (I-P_S)\begin{pmatrix}v_1\\v_2\end{pmatrix}=\begin{pmatrix}0\\v_2\end{pmatrix}\in S^\perp}{(a) for $S^\perp$; $(0,v_2)\T$ is sent to itself: (b)}
+\end{deriv}
+So $P_S$ is the orthogonal projection matrix of the $x$-axis: it drops the foot of $\vect{v}$ onto the axis.
+\end{example}
+
+\begin{definition}[Idempotent matrix]
+A square matrix $P$ is \dfn{idempotent} if $\boxed{P^2=P}$.
+\end{definition}
+
+\begin{result}[A projection matrix is idempotent]
+Every projection matrix $P_S$ satisfies $P_S^2=P_S$.
+\end{result}
+\begin{proof}
+Take any $\vect{v}\in V$.
+\begin{deriv}
+\dl{P_S\vect{v}\in S}{(a)}
+\dl{P_S(P_S\vect{v})=P_S\vect{v}}{(b), applied to the vector $P_S\vect{v}$ of $S$}
+\dl{P_S^2\vect{v}=P_S\vect{v}\ \text{ for every }\vect{v}\in V}{$P_S(P_S\vect{v})=(P_SP_S)\vect{v}$}
+\dl{P_S^2=P_S}{matrices that agree on every vector are equal (take each unit vector: column by column)\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{definition}[Eigenvalue, eigenvector]
+For a square matrix $A$, a number $\lambda$ is an \dfn{eigenvalue} of $A$, with \dfn{eigenvector} $\vect{e}$, if
+\[
+  \boxed{\;A\vect{e}=\lambda\vect{e},\qquad\vect{e}\ne\vect{0}.\;}
+\]
+\end{definition}
+
+\begin{result}[Idempotent matrices have eigenvalues $0$ or $1$]
+If $P^2=P$ and $P\vect{v}=\lambda\vect{v}$ with $\vect{v}\ne\vect{0}$, then $\lambda\in\{0,1\}$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{PP\vect{v}=\lambda P\vect{v}}{multiply $P\vect{v}=\lambda\vect{v}$ on the left by $P$}
+\dl{P^2\vect{v}=\lambda^2\vect{v}}{$P\vect{v}=\lambda\vect{v}$ on the right side}
+\dl{P\vect{v}=\lambda^2\vect{v}}{$P^2=P$}
+\dl{\lambda\vect{v}=\lambda^2\vect{v}\ \Rightarrow\ (\lambda^2-\lambda)\vect{v}=\vect{0}}{$P\vect{v}=\lambda\vect{v}$ on the left side}
+\dl{(\lambda^2-\lambda)\,\vect{v}\T\vect{v}=0}{multiply by $\vect{v}\T$; a number now}
+\dl{\lambda(\lambda-1)=0\ \Rightarrow\ \lambda\in\{0,1\}}{$\vect{v}\T\vect{v}=\|\vect{v}\|^2>0$ as $\vect{v}\ne\vect{0}$\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{theorem}[Projection from an orthonormal basis]
+If $\vect{v}_1,\dots,\vect{v}_k$ is an orthonormal basis of a subspace $S\subseteq\R^n$, then the orthogonal projection matrix of $S$ is
+\[
+  \boxed{\;P_S=\sum_{i=1}^k\vect{v}_i\vect{v}_i\T.\;}
+\]
+\end{theorem}
+\begin{proof}
+Orthonormal means $\vect{v}_i\T\vect{v}_j=\ind{i=j}$.
+\begin{steps}
+  \item \emph{(a) for $S$.} For any $\vect{v}\in\R^n$:
+  \begin{deriv}
+  \dl{P_S\vect{v}=\textstyle\sum_i\vect{v}_i\,(\vect{v}_i\T\vect{v})\in S}{each $\vect{v}_i\T\vect{v}$ is a number: a combination of the basis}
+  \end{deriv}
+  \item \emph{(b) for $S$.} For $\vect{v}=\sum_jc_j\vect{v}_j\in S$:
+  \begin{deriv}
+  \dl{P_S\vect{v}=\textstyle\sum_i\vect{v}_i\sum_jc_j\,\vect{v}_i\T\vect{v}_j}{substitute $\vect{v}$}
+  \dl{\quad=\textstyle\sum_i\vect{v}_i\sum_jc_j\,\ind{i=j}=\sum_ic_i\vect{v}_i=\vect{v}}{orthonormal}
+  \end{deriv}
+  \item \emph{(a) for $S^\perp$.} For any $\vect{v}$ and each $j$:
+  \begin{deriv}
+  \dl{\vect{v}_j\T(I-P_S)\vect{v}=\vect{v}_j\T\vect{v}-\textstyle\sum_i(\vect{v}_j\T\vect{v}_i)(\vect{v}_i\T\vect{v})}{multiply out}
+  \dl{\quad=\vect{v}_j\T\vect{v}-\vect{v}_j\T\vect{v}=0}{orthonormal: only $i=j$ survives}
+  \end{deriv}
+  So $(I-P_S)\vect{v}$ is orthogonal to every $\vect{v}_j$, hence to every combination of them: it lies in $S^\perp$.
+  \item \emph{(b) for $S^\perp$.} For $\vect{w}\in S^\perp$:
+  \begin{deriv}
+  \dl{P_S\vect{w}=\textstyle\sum_i\vect{v}_i\,(\vect{v}_i\T\vect{w})=\vect{0}}{$\vect{v}_i\in S$, so $\vect{v}_i\T\vect{w}=0$}
+  \dl{(I-P_S)\vect{w}=\vect{w}}{subtract from $\vect{w}$\qedhere}
+  \end{deriv}
+\end{steps}
+\end{proof}
+
+\begin{example}[The unit vectors of $\R^3$]
+$\vect{u}_1=(1,0,0)\T$, $\vect{u}_2=(0,1,0)\T$, $\vect{u}_3=(0,0,1)\T$ are orthonormal.
+\begin{deriv}
+\dl{\vect{u}_1\vect{u}_1\T+\vect{u}_2\vect{u}_2\T+\vect{u}_3\vect{u}_3\T=I_3}{each $\vect{u}_i\vect{u}_i\T$ has a single $1$, at place $(i,i)$}
+\dl{\vect{u}_1\vect{u}_1\T+\vect{u}_2\vect{u}_2\T=\begin{pmatrix}1&0&0\\0&1&0\\0&0&0\end{pmatrix}}{$S=\Sp\{\vect{u}_1,\vect{u}_2\}$, the $xy$-plane}
+\end{deriv}
+The projection onto the whole space is $I_3$: it moves nothing.
+\end{example}
+
+%=====================================================================
+\section{Column space and rank}
+
+\begin{definition}[Column space, row space, rank]
+For an $n\times m$ matrix $A=[\vect{a}_1\ \cdots\ \vect{a}_m]$, the \dfn{column space} is
+\[
+  \boxed{\;\C(A)=\Sp\{\vect{a}_1,\dots,\vect{a}_m\}=\{A\vect{x}:\ \vect{x}\in\R^m\},\;}
+\]
+the two sets being equal because $A\vect{x}=\sum_jx_j\vect{a}_j$. The \dfn{row space} is $\C(A\T)$. The \dfn{rank of $A$} is $\rank A=\dim\C(A)$. Row rank equals column rank, $\rank A\T=\rank A$ (stated without proof).
+\end{definition}
+
+\begin{result}[Column-space facts]
+For matrices of matching sizes, $A$ with $n$ rows, four facts hold.
+\begin{itemize}
+  \item[(1)] $\C([A:B])=\C(A)+\C(B)=\{\vect{u}+\vect{v}:\ \vect{u}\in\C(A),\ \vect{v}\in\C(B)\}$.
+  \item[(2)] $\boxed{\C(AB)\subseteq\C(A)}$.
+  \item[(3)] $\boxed{\C(AA\T)=\C(A)}$, so $\rank(AA\T)=\rank A$.
+  \item[(4)] $\dim\C(A)^\perp=n-\rank A$.
+\end{itemize}
+\end{result}
+\begin{proof}
+\begin{steps}
+  \item \emph{(1), (2), (4).}
+  \begin{deriv}
+  \dl{[A:B]\begin{pmatrix}\vect{x}\\\vect{z}\end{pmatrix}=A\vect{x}+B\vect{z}}{(1): block multiplication}
+  \dl{AB\vect{x}=A(B\vect{x})\in\C(A)}{(2): $AB\vect{x}$ is $A$ times a vector}
+  \dl{\dim\C(A)^\perp=n-\dim\C(A)=n-\rank A}{(4): $\dim S^\perp=\dim V-\dim S$ with $V=\R^n$}
+  \end{deriv}
+  The two ends of (2) are $B=I$, where $\C(AB)=\C(A)$, and $B=0$, where $\C(AB)=\{\vect{0}\}$.
+  \item \emph{(3), first half: $\C(AA\T)\subseteq\C(A)$.} This is (2) with $B=A\T$.
+  \item \emph{(3), second half: $\C(AA\T)^\perp\subseteq\C(A)^\perp$.}
+  \begin{deriv}
+  \dl{\vect{l}\in\C(AA\T)^\perp\ \Rightarrow\ \vect{l}\T AA\T=\vect{0}\T}{$\vect{l}$ is orthogonal to every column of $AA\T$}
+  \dl{\quad\Rightarrow\ \vect{l}\T AA\T\vect{l}=0}{multiply on the right by $\vect{l}$}
+  \dl{\quad\Rightarrow\ (A\T\vect{l})\T(A\T\vect{l})=0}{$(A\T\vect{l})\T=\vect{l}\T A$}
+  \dl{\quad\Rightarrow\ A\T\vect{l}=\vect{0}}{$\|\vect{u}\|^2=0$ only if $\vect{u}=\vect{0}$}
+  \dl{\quad\Rightarrow\ \vect{l}\T A=\vect{0}\T\ \Rightarrow\ \vect{l}\in\C(A)^\perp}{transpose; $\vect{l}$ is orthogonal to every column of $A$, so to every $A\vect{x}$}
+  \end{deriv}
+  \item \emph{(3), conclusion.}
+  \begin{deriv}
+  \dl{\C(A)=\big(\C(A)^\perp\big)^\perp}{$(S^\perp)^\perp=S$}
+  \dl{\quad\subseteq\big(\C(AA\T)^\perp\big)^\perp}{Step-3, and $S_1\subseteq S_2\Rightarrow S_2^\perp\subseteq S_1^\perp$}
+  \dl{\quad=\C(AA\T)}{$(S^\perp)^\perp=S$}
+  \end{deriv}
+  With Step-2, $\C(AA\T)=\C(A)$; equal spaces have equal dimension, so $\rank(AA\T)=\rank A$.\qedhere
+\end{steps}
+\end{proof}
+
+\begin{corollary}[When $A\T A$ is invertible]
+For an $n\times m$ matrix $A$, $\rank(A\T A)=\rank A$. So the $m\times m$ matrix $A\T A$ is invertible exactly when $A$ has full column rank $m$.
+\end{corollary}
+\begin{proof}
+\begin{deriv}
+\dl{\rank(A\T A)=\rank\big(A\T(A\T)\T\big)}{$(A\T)\T=A$}
+\dl{\quad=\rank A\T}{$\rank(MM\T)=\rank M$ with $M=A\T$}
+\dl{\quad=\rank A}{row rank equals column rank}
+\dl{A\T A\text{ invertible}\iff\rank(A\T A)=m}{an $m\times m$ matrix is invertible exactly when its rank is $m$}
+\dl{\quad\iff\rank A=m}{$\rank(A\T A)=\rank A$\qedhere}
+\end{deriv}
+\end{proof}
+
+In regression $A=\X$, of size $n\times(k+1)$: $\X\T\X$ is invertible exactly when the columns of $\X$ are linearly independent.
+
+%=====================================================================
+\section{Generalised inverses}
+
+\begin{definition}[Generalised inverse]
+A matrix $G$ is a \dfn{generalised inverse} of $A$ if
+\[
+  \boxed{\;AGA=A;\;}
+\]
+it is written $A^-$.
+\end{definition}
+
+\begin{result}[Properties of $A^-$]
+Four properties.
+\begin{itemize}
+  \item[(1)] If $A$ is $n\times m$, then $A^-$ is $m\times n$.
+  \item[(2)] $A^-$ need not be unique.
+  \item[(3)] $AA^-$ is a projection matrix of $\C(A)$.
+  \item[(4)] $\boxed{A(A\T A)^-A\T}$ is the orthogonal projection matrix of $\C(A)$.
+\end{itemize}
+\end{result}
+
+\begin{proof}[Proof of (1)--(3)]
+\begin{deriv}
+\dl{A_{n\times m}\,G\,A_{n\times m}\ \text{ is defined}\ \Rightarrow\ G\text{ is }m\times n}{(1): sizes must chain}
+\dl{\begin{pmatrix}1&0\\0&0\end{pmatrix}\begin{pmatrix}1&0\\0&c\end{pmatrix}\begin{pmatrix}1&0\\0&0\end{pmatrix}=\begin{pmatrix}1&0\\0&0\end{pmatrix}}{(2): every $c\in\R$ gives a generalised inverse}
+\dl{AA^-\vect{v}=A(A^-\vect{v})\in\C(A)}{(3), (a): $A$ times a vector}
+\dl{\vect{v}=A\vect{x}\ \Rightarrow\ AA^-\vect{v}=AA^-A\vect{x}=A\vect{x}=\vect{v}}{(3), (b): $AA^-A=A$\qedhere}
+\end{deriv}
+\end{proof}
+
+If $A$ is square and invertible, $A^-=A^{-1}$ is the only one: multiply $AGA=A$ by $A^{-1}$ on both sides. Property (4) rests on one identity.
+
+\begin{lemma}[Cancelling with a generalised inverse]
+Let $G$ be any generalised inverse of $A\T A$. Then
+\[
+  \boxed{\;AGA\T A=A\qquad\text{and}\qquad A\T AGA\T=A\T.\;}
+\]
+\end{lemma}
+\begin{proof}
+Put $D=AGA\T A-A$.
+\begin{steps}
+  \item \emph{Columns of $D$ lie in $\C(A)^\perp$.}
+  \begin{deriv}
+  \dl{A\T D=A\T AGA\T A-A\T A}{multiply out}
+  \dl{\quad=A\T A-A\T A=0}{$G$ is a generalised inverse of $A\T A$}
+  \end{deriv}
+  \item \emph{Columns of $D$ lie in $\C(A)$.}
+  \begin{deriv}
+  \dl{D=A\,(GA\T A-I)}{factor $A$ out on the left; $\C(AB)\subseteq\C(A)$}
+  \end{deriv}
+  \item \emph{$D=0$.} Each column of $D$ is in $\C(A)\cap\C(A)^\perp=\{\vect{0}\}$, so $AGA\T A=A$.
+  \item \emph{The second identity.}
+  \begin{deriv}
+  \dl{(A\T A)G\T(A\T A)=\big((A\T A)G(A\T A)\big)\T}{$(MNL)\T=L\T N\T M\T$; $A\T A$ is symmetric}
+  \dl{\quad=(A\T A)\T=A\T A}{so $G\T$ is a generalised inverse of $A\T A$ too}
+  \dl{AG\T A\T A=A}{Step-3 with $G\T$ in place of $G$}
+  \dl{A\T AGA\T=A\T}{transpose both sides\qedhere}
+  \end{deriv}
+\end{steps}
+\end{proof}
+
+\begin{proof}[Proof of (4)]
+Let $P=AGA\T$, with $G$ a generalised inverse of $A\T A$.
+\begin{deriv}
+\dl{P\vect{v}=A(GA\T\vect{v})\in\C(A)}{(a) for $\C(A)$}
+\dl{\vect{v}=A\vect{x}\ \Rightarrow\ P\vect{v}=AGA\T A\vect{x}=A\vect{x}=\vect{v}}{(b) for $\C(A)$; lemma: $AGA\T A=A$}
+\dl{A\T(I-P)\vect{v}=(A\T-A\T AGA\T)\vect{v}=\vect{0}}{(a) for $\C(A)^\perp$; lemma: $A\T AGA\T=A\T$}
+\dl{\vect{w}\in\C(A)^\perp\ \Rightarrow\ A\T\vect{w}=\vect{0}\ \Rightarrow\ P\vect{w}=\vect{0}}{$\vect{w}$ is orthogonal to every column of $A$}
+\dl{\quad\Rightarrow\ (I-P)\vect{w}=\vect{w}}{(b) for $\C(A)^\perp$\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{result}[Full column rank: the projection $P_A$]
+If $A$ ($n\times m$) has full column rank $m$, the only generalised inverse of $A\T A$ is $(A\T A)^{-1}$, and the orthogonal projection matrix of $\C(A)$ is
+\[
+  \boxed{\;P_A=A(A\T A)^{-1}A\T.\;}
+\]
+$P_A$ and $I-P_A$ are symmetric and idempotent, and $\C(P_A)=\C(A)$, so $\rank P_A=\rank A=m$.
+\end{result}
+\begin{proof}
+\begin{steps}
+  \item \emph{The generalised inverse.} $A\T A$ is invertible (full column rank), so it is the case ``$A$ square and invertible'' above. Property (4) gives $P_A$.
+  \item \emph{Symmetric and idempotent.}
+  \begin{deriv}
+  \dl{P_A\T=A\big((A\T A)^{-1}\big)\T A\T}{$(MNL)\T=L\T N\T M\T$}
+  \dl{\quad=A(A\T A)^{-1}A\T=P_A}{the inverse of a symmetric matrix is symmetric}
+  \dl{P_A^2=A(A\T A)^{-1}A\T A(A\T A)^{-1}A\T}{multiply}
+  \dl{\quad=A(A\T A)^{-1}A\T=P_A}{$A\T A(A\T A)^{-1}=I_m$}
+  \dl{(I-P_A)^2=I-2P_A+P_A^2}{multiply out}
+  \dl{\quad=I-P_A}{$P_A^2=P_A$; and $(I-P_A)\T=I-P_A\T=I-P_A$}
+  \end{deriv}
+  \item \emph{Column space and rank.}
+  \begin{deriv}
+  \dl{P_A=A\,\big[(A\T A)^{-1}A\T\big]\ \Rightarrow\ \C(P_A)\subseteq\C(A)}{$\C(AB)\subseteq\C(A)$}
+  \dl{P_AA=A(A\T A)^{-1}A\T A=A}{$(A\T A)^{-1}A\T A=I_m$}
+  \dl{A=P_AA\ \Rightarrow\ \C(A)\subseteq\C(P_A)}{$\C(AB)\subseteq\C(A)$ with $P_A$ in place of $A$\qedhere}
+  \end{deriv}
+\end{steps}
+\end{proof}
+
+\begin{example}[$P_A\ne I$; projecting onto $\vect{1}$]
+$A$ is rectangular, so there is no $A^{-1}$ to cancel: $A(A\T A)^{-1}A\T\ne I$ in general. Take $A=\vect{1}$ ($n\times1$).
+\begin{deriv}
+\dl{P_{\vect{1}}=\vect{1}(\vect{1}\T\vect{1})^{-1}\vect{1}\T=\tfrac1n\vect{1}\vect{1}\T}{$\vect{1}\T\vect{1}=n$}
+\dl{P_{\vect{1}}\vect{y}=\vect{1}\,\tfrac1n\textstyle\sum_iy_i=\bar y\,\vect{1}}{$\vect{1}\T\vect{y}=\sum_iy_i$}
+\dl{\vect{1}\T(\vect{y}-\bar y\vect{1})=\textstyle\sum_i(y_i-\bar y)=0}{the error is orthogonal to $\vect{1}$}
+\end{deriv}
+Projecting $\vect{y}$ onto the constants gives $\bar y\,\vect{1}$, and $\rank P_{\vect{1}}=1<n$.
+\end{example}
+
+Back to the setup: if the $x_i$ are not all equal, $\vect{1}$ and $\vect{x}$ are linearly independent, $A=[\vect{1}\ \vect{x}]$ has full column rank $2$, and $P_A\vect{y}$ lies in $\Sp\{\vect{1},\vect{x}\}$ with $\vect{y}-P_A\vect{y}$ in its orthogonal complement. A later chapter shows that this $P_A\vect{y}$ is the closest $\hat{\vect y}$: the prediction and the error are orthogonal.
