@@ -108,11 +108,11 @@ Macros live in `preamble.tex` (`\E`, `\Var`, `\Cov`, `\tr`, `\rank`, `\argmin`, 
 
 | # | Chapter | Contents | Write from | Status |
 |---|---|---|---|---|
-| 0 | Front matter | assumed-probability box (D10), notation table (§5), how to read a two-column derivation | src/old/chapters/00 | todo |
+| 0 | Front matter | assumed-probability box (D10), notation table (§5), how to read a two-column derivation | src/old/chapters/00 | drafted |
 | **I** | **Inference foundations** | | | |
-| 1 | Population, sample, likelihood, MLE | statistic, likelihood, MLE for Bernoulli, Exp, N, Binomial; support depends on θ: U(θ,2θ), uniform, triangular, two-value MLE examples | old 01; BDA 64–66; RTSM 275–276, 387–388; FE gen 05; fin_econ 04–07; papers/MLE practice | todo |
-| 2 | Properties of estimators | unbiasedness (x̄; the 1/(n−1) proof; Σaᵢ² ≥ 1/n), bias, MSE = Var + Bias², consistency, method of moments (Gamma) | old 02; BDA 67–73; RTSM 272–274, 384–386; stats training 60–72; fin_econ 01 | todo |
-| 3 | Sampling distributions & CIs | χ², t, F defined; CIs for μ (σ known/unknown) and σ²; election sample size (Chebyshev vs CLT) | old 03; BDA 74–81; RTSM 208–209, 277–278, 389–390; fin_econ 03 | todo |
+| 1 | Population, sample, likelihood, MLE | statistic, likelihood, MLE for Bernoulli, Exp, N, Binomial; support depends on θ: U(θ,2θ), uniform, triangular, two-value MLE examples | old 01; BDA 64–66; RTSM 275–276, 387–388; FE gen 05; fin_econ 04–07; papers/MLE practice | drafted |
+| 2 | Properties of estimators | unbiasedness (x̄; the 1/(n−1) proof; Σaᵢ² ≥ 1/n), bias, MSE = Var + Bias², consistency, method of moments (Gamma) | old 02; BDA 67–73; RTSM 272–274, 384–386; stats training 60–72; fin_econ 01 | drafted |
+| 3 | Sampling distributions & CIs | χ², t, F defined; CIs for μ (σ known/unknown) and σ²; election sample size (Chebyshev vs CLT) | old 03; BDA 74–81; RTSM 208–209, 277–278, 389–390; fin_econ 03 | drafted |
 | 4 | Hypothesis testing | H₀/H₁, Type I/II, α, power, z/t one- and two-sample, pooled t, χ² goodness of fit | old 04; BDA 82–89; RTSM 408–409 | todo |
 | **II** | **The learning view of regression** | | | |
 | 5 | Statistical learning | S → h_S; supervised/unsupervised; regression = E_{y|x}[y]; linear in β vs not; simulation; curse of dimensionality | old 05; BDA 89–94, 114–115; RTSM 136–157 | todo |
