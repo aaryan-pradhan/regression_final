@@ -119,7 +119,7 @@ Macros live in `preamble.tex` (`\E`, `\Var`, `\Cov`, `\tr`, `\rank`, `\argmin`, 
 | 6 | Bias–variance decomposition | theorem, proof (S5 path), four examples | old 06; BDA 95–103 | drafted |
 | **III** | **Linear algebra & random vectors** | | | |
 | 7 | Vector spaces → projections | subspace, span, basis, S⊥, P_S idempotent with eigenvalues 0/1, C(A) facts, C(AAᵀ)=C(A), rank, g-inverse, A(AᵀA)⁻Aᵀ | RTSM 64–76, 210–222, 354–366 | drafted |
-| 8 | Symmetric matrices & quadratic forms | eigen, AM/GM, spectral theorem, real eigenvalues, pd/psd, counterexamples, Cauchy–Schwarz and the extended form, maximisation lemma | BDA 122–176; RTSM 220–221 | todo |
+| 8 | Symmetric matrices & quadratic forms | eigen, AM/GM, spectral theorem, real eigenvalues, pd/psd, counterexamples, Cauchy–Schwarz and the extended form, maximisation lemma | BDA 122–176; RTSM 220–221 | drafted |
 | 9 | Random vectors | E, Var algebra (AΣAᵀ, Cov(AX,BX)), Var psd, E(xᵀAx) = tr(AΣ) + μᵀAμ, x−μ ∈ C(Σ) a.s., Mahalanobis | RTSM 77–84, 223–231, 367–373 | todo |
 | 10 | Multivariate normal | definition via aᵀX, density, AX, BVN, ellipses, partition/marginals/independence, conditional mean = linear regression, χ²_p ellipsoid, MLE μ̂ and Σ̂, Wishart, multivariate CLT | BDA 116–140; RTSM 85–87, 230–233, 402–405 | todo |
 | 11 | Quadratic forms of normal vectors | central and noncentral χ², xᵀAx ~ χ² iff A idempotent, Cochran, independence (CA = 0), x̄ ⊥ s², t and F in matrix form | RTSM 88–93, 234–239, 374–383 | todo |
