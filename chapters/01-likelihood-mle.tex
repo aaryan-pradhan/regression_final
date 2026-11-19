@@ -1,0 +1,374 @@
+\chapter{Likelihood and MLE}
+
+The book starts from data: a few numbers recorded from a chance experiment, and the question of what they say about the law that produced them.
+
+%=====================================================================
+\section{Population and sample}
+
+\begin{definition}[Random experiment]
+A \dfn{random experiment} has several possible outcomes, known in advance; which one occurs is not known until it is done. It can be repeated under identical conditions.
+\end{definition}
+
+\begin{definition}[Population]
+The \dfn{population} is the totality of all possible repetitions of a random experiment: the law of the random variable $X$ that records the outcome, with cdf $F_X$ and pmf or pdf $f_X$.
+\end{definition}
+
+For a coin, the population is all possible tosses: $P(X=1)=p$, $P(X=0)=1-p$.
+
+\begin{definition}[Sample]
+A \dfn{sample} of size $n$ is $n$ random variables
+\[
+  \boxed{\;S=(X_1,\dots,X_n),\qquad X_1,\dots,X_n\iid F_X,\quad\text{written } S\sim F_X^{\,n}.\;}
+\]
+The experiment is done $n$ times, independently, under identical conditions. The recorded numbers $x_1,\dots,x_n$ are the \emph{observed values}, or the \emph{data}.
+\end{definition}
+
+\begin{setup}[The setup of Part I]
+Population $F_X$ with pmf or pdf $f_X$, unknown; sample $S=(X_1,\dots,X_n)\sim F_X^{\,n}$; goal: learn about $F_X$ from $S$. Capital $X_i$ is random; lower case $x_i$ is what was observed.
+\end{setup}
+
+\begin{definition}[Statistic]
+A \dfn{statistic} is a function $T(S)=T(X_1,\dots,X_n)$ of the sample that involves no unknown quantity. It is a random variable; once the data are in, it is a number.
+\end{definition}
+
+\begin{example}
+$\bar X=\frac1n\sum_{i=1}^n X_i$, $\max_i X_i$ and $X_1$ are statistics. $\bar X-\mu$ is not, when $\mu$ is unknown.
+\end{example}
+
+%=====================================================================
+\section{Parametric families and estimators}
+
+From experience, or from the data, we usually fix the shape of $F_X$ and leave a few numbers unknown.
+
+\begin{definition}[Parametric family]
+A \dfn{parametric family} is a set of laws $\mathcal F=\{f(x\given\theta):\theta\in\Theta\}$ indexed by a number or vector $\theta$, the \dfn{parameter}. The set $\Theta$ of allowed values is the \dfn{parameter space}.
+\end{definition}
+
+\begin{example}[Three families used throughout]
+Each density carries its support as an indicator.
+\begin{itemize}
+  \item Bernoulli: $f(x\given p)=p^x(1-p)^{1-x}\,\ind{x\in\{0,1\}}$, $\Theta=[0,1]$.
+  \item Exponential: $f(x\given\lambda)=\lambda e^{-\lambda x}\,\ind{x>0}$, $\Theta=(0,\infty)$.
+  \item Normal: $f(x\given\mu,\sigma^2)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-(x-\mu)^2/(2\sigma^2)}$, $\theta=(\mu,\sigma^2)\in\R\times(0,\infty)$.
+\end{itemize}
+\end{example}
+
+With the data given and the family $\mathcal F$ known, only $\theta$ is unknown. Knowing $\theta$ means knowing the whole population.
+
+\begin{definition}[Estimator and estimate]
+An \dfn{estimator} of $\theta$ is a statistic $\hat\theta=\hat\theta(S)$ used to guess $\theta$. Its value $\hat\theta(x_1,\dots,x_n)$ at the data is the \dfn{estimate}. An estimator of $g(\theta)$ is a statistic used to guess $g(\theta)$.
+\end{definition}
+
+%=====================================================================
+\section{The likelihood}
+
+We want the head probability $p$ of a coin.
+(1) 10 tosses give 8 heads: a sensible $\hat p$?
+(2) 10 tosses give 10 heads: what now?
+(3) 10 tosses give 10 heads, and $\hat p$ must be $0.999$ or $0.001$.
+For (3), ten heads in a row are almost impossible when $p=0.001$: prefer the value of $p$ under which the data are most probable.
+
+\begin{definition}[Likelihood]
+For observed values $x_1,\dots,x_n$ of an iid sample from $f(x\given\theta)$, the \dfn{likelihood} and the \dfn{log-likelihood} are
+\[
+  \boxed{\;L(\theta\given x_1,\dots,x_n)=\prod_{i=1}^n f(x_i\given\theta),\qquad \ell(\theta)=\log L(\theta\given x_1,\dots,x_n),\qquad\theta\in\Theta.\;}
+\]
+\end{definition}
+
+The product is the joint pmf or pdf of the sample. As a probability, $\theta$ is fixed and the data vary; as a likelihood, the data are fixed at what was observed and $\theta$ varies.
+
+\begin{example}[The coin, question (3)]
+Write $x_i=1$ for a head.
+\begin{deriv}
+\dl{L(p)=\prod_{i=1}^n p^{x_i}(1-p)^{1-x_i}}{Bernoulli pmf; the indicators are $1$ at observed data}
+\dl{\phantom{L(p)}=p^{\sum_i x_i}(1-p)^{\,n-\sum_i x_i}}{$a^ba^c=a^{b+c}$}
+\dl{\phantom{L(p)}=p^{10}}{$n=10$, $\sum_ix_i=10$}
+\end{deriv}
+So $L(0.999)=0.999^{10}\approx0.990$ and $L(0.001)=10^{-30}$: the data are about $10^{30}$ times more likely under $p=0.999$. Pick $\hat p=0.999$.
+\end{example}
+
+%=====================================================================
+\section{The maximum likelihood estimator}
+
+\begin{definition}[Maximum likelihood estimator]
+A \dfn{maximum likelihood estimator} (MLE) of $\theta$ is a value in $\Theta$ that makes the likelihood largest:
+\[
+  \boxed{\;\hat\theta_{\MLE}=\argmax_{\theta\in\Theta}L(\theta\given x_1,\dots,x_n).\;}
+\]
+As a function of the random sample, $\hat\theta_{\MLE}(S)$ is an estimator.
+\end{definition}
+
+\begin{result}[The logarithm does not move the maximum]
+On the set where $L(\theta)>0$, $\ \argmax_\theta L(\theta)=\argmax_\theta\ell(\theta)$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{L(\theta_1)>L(\theta_2)\iff\log L(\theta_1)>\log L(\theta_2)}{$\log$ is strictly increasing on $(0,\infty)$}
+\dl{\phantom{L(\theta_1)>L(\theta_2)}\iff\ell(\theta_1)>\ell(\theta_2)}{definition of $\ell$}
+\end{deriv}
+So $L$ and $\ell$ rank all $\theta$ in the same order. A point with $L(\theta)=0$ is never a maximiser, since $L>0$ at the true $\theta$.
+\end{proof}
+
+\begin{result}[Sign test for a global maximum]
+Let $\ell$ be differentiable on an interval $I$ and $\theta^*\in I$. If $\ell'(\theta)>0$ for $\theta<\theta^*$ and $\ell'(\theta)<0$ for $\theta>\theta^*$ (both in $I$), then $\theta^*$ is the unique global maximiser of $\ell$ on $I$.
+\end{result}
+\begin{proof}
+Take $\theta\ne\theta^*$ in $I$.
+\begin{deriv}
+\dl{\ell(\theta^*)-\ell(\theta)=\ell'(c)\,(\theta^*-\theta)}{mean value theorem: some $c$ strictly between $\theta$ and $\theta^*$}
+\dl{\theta<\theta^*:\ \ell'(c)>0,\ \theta^*-\theta>0}{$c<\theta^*$, so $\ell'(c)>0$ by hypothesis}
+\dl{\theta>\theta^*:\ \ell'(c)<0,\ \theta^*-\theta<0}{$c>\theta^*$, so $\ell'(c)<0$ by hypothesis}
+\dl{\ell(\theta^*)-\ell(\theta)>0}{in both cases the two factors have the same sign\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{corollary}[Second-derivative version]
+If $\ell'(\theta^*)=0$ and $\ell''(\theta)<0$ for every $\theta\in I$, then $\theta^*$ is the unique global maximiser of $\ell$ on $I$.
+\end{corollary}
+\begin{proof}
+\begin{deriv}
+\dl{\ell''<0\ \text{on } I\Rightarrow\ell'\ \text{strictly decreasing}}{a function with negative derivative decreases}
+\dl{\ell'>0\ \text{left of }\theta^*,\ \ell'<0\ \text{right of }\theta^*}{$\ell'(\theta^*)=0$ and $\ell'$ decreases}
+\dl{\theta^*\ \text{is the unique global maximiser}}{sign test: $\ell'>0$ left and $\ell'<0$ right of $\theta^*$ gives the unique maximum\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{setup}[Recipe: the MLE when $L$ is smooth in $\theta$]
+Four steps, each allowed by a result above.
+\begin{steps}
+  \item Write $L(\theta)=\prod_i f(x_i\given\theta)$.
+  \item Take logs: $\ell(\theta)=\sum_i\log f(x_i\given\theta)$; the logarithm does not move the maximum.
+  \item Solve the likelihood equation $\ell'(\theta)=0$ for $\theta^*$.
+  \item Confirm the global maximum by the sign test or by $\ell''<0$.
+\end{steps}
+This works only when $L$ is smooth in $\theta$ and the maximum is inside $\Theta$; otherwise maximise $L$ by looking at it.
+\end{setup}
+
+%=====================================================================
+\section{MLEs for the standard models}
+
+\begin{example}[Bernoulli]
+$X_1,\dots,X_n\iid\text{Bernoulli}(p)$, $p\in[0,1]$; let $K=\sum_ix_i$ be the number of heads.
+\begin{deriv}
+\dl{L(p)=p^{K}(1-p)^{n-K}}{the coin likelihood above, with $\sum_ix_i=K$}
+\dl{\ell(p)=K\log p+(n-K)\log(1-p)}{$\log(ab)=\log a+\log b$, $\log a^b=b\log a$}
+\dl{\ell'(p)=\frac{K}{p}-\frac{n-K}{1-p}=0}{differentiate; set to zero}
+\dl{\iff K(1-p)=(n-K)p\iff p=\frac Kn}{multiply by $p(1-p)>0$; $K-Kp=np-Kp$}
+\dl{\ell''(p)=-\frac{K}{p^2}-\frac{n-K}{(1-p)^2}<0}{both terms $\le0$, not both $0$ as $K+(n-K)=n\ge1$}
+\end{deriv}
+By the second-derivative version, $p=K/n$ is the global maximiser on $(0,1)$. If $K=n$, $L=p^n$ increases, so the maximum is $p=1=\bar x$; if $K=0$, $L=(1-p)^n$ decreases and the maximum is $p=0=\bar x$. In every case
+\[
+  \boxed{\;\hat p_{\MLE}=\bar X.\;}
+\]
+The coin: (1) $\hat p=8/10=0.8$; (2) $\hat p=10/10=1$.
+\end{example}
+
+\begin{example}[Binomial with known number of trials]
+$X_1,\dots,X_n\iid\text{Bin}(10,p)$, $K=\sum_ix_i$.
+\begin{deriv}
+\dl{L(p)=\Big(\prod_{i}\binom{10}{x_i}\Big)p^{K}(1-p)^{10n-K}}{product of $\binom{10}{x_i}p^{x_i}(1-p)^{10-x_i}$}
+\dl{\ell(p)=c+K\log p+(10n-K)\log(1-p)}{$c=\sum_i\log\binom{10}{x_i}$ is free of $p$}
+\dl{\ell'(p)=\frac Kp-\frac{10n-K}{1-p}=0\iff p=\frac{K}{10n}}{as for the Bernoulli, with $10n$ trials}
+\dl{\ell''(p)=-\frac{K}{p^2}-\frac{10n-K}{(1-p)^2}<0}{second-derivative version: global maximum}
+\end{deriv}
+\[
+  \boxed{\;\hat p_{\MLE}=\frac{\sum_{i=1}^nX_i}{10n}\;}
+\]
+Total successes over total trials; with $m$ trials, $\sum_iX_i/(mn)$.
+\end{example}
+
+\begin{example}[Exponential]
+$X_1,\dots,X_n\iid\text{Exp}(\lambda)$, $\lambda>0$.
+\begin{deriv}
+\dl{L(\lambda)=\prod_i\lambda e^{-\lambda x_i}\ind{x_i>0}=\lambda^ne^{-\lambda\sum_ix_i}}{the indicators are $1$ at observed data}
+\dl{\ell(\lambda)=n\log\lambda-\lambda\sum_ix_i}{take logs}
+\dl{\ell'(\lambda)=\frac n\lambda-\sum_ix_i=0\iff\lambda=\frac{n}{\sum_ix_i}}{differentiate; set to zero}
+\dl{\ell''(\lambda)=-\frac{n}{\lambda^2}<0}{second-derivative version: global maximum}
+\end{deriv}
+\[
+  \boxed{\;\hat\lambda_{\MLE}=\frac{1}{\bar X}\;}
+\]
+\end{example}
+
+\begin{example}[Normal, known variance, one observation]
+$X\sim N(\mu,1)$, $x=5.45$ observed. $L(\mu)=\frac{1}{\sqrt{2\pi}}\exp\big(-\frac12(5.45-\mu)^2\big)$. The exponent is $\le0$, and $0$ only at $\mu=5.45$; $\exp$ is increasing, so $\hat\mu=5.45$.
+\end{example}
+
+The full Normal needs one identity, used throughout the book.
+
+\begin{lemma}[Splitting a sum of squares around the mean]
+For $\vect{x}=(x_1,\dots,x_n)\T$, $\bar x=\frac1n\vect{1}\T\vect{x}$ and any $c\in\R$,
+\[
+  \boxed{\;\sum_{i=1}^n(x_i-c)^2=\sum_{i=1}^n(x_i-\bar x)^2+n(\bar x-c)^2,\quad\text{i.e.}\quad \|\vect{x}-c\vect{1}\|^2=\|\vect{x}-\bar x\vect{1}\|^2+n(\bar x-c)^2.\;}
+\]
+\end{lemma}
+\begin{proof}
+\begin{deriv}
+\dl{\|\vect{x}-c\vect{1}\|^2=\|(\vect{x}-\bar x\vect{1})+(\bar x-c)\vect{1}\|^2}{add and subtract $\bar x\vect{1}$}
+\dl{\quad=\|\vect{x}-\bar x\vect{1}\|^2+\underbrace{2(\bar x-c)\vect{1}\T(\vect{x}-\bar x\vect{1})}_{\text{MT}}+(\bar x-c)^2\vect{1}\T\vect{1}}{$\|\vect{u}+\vect{v}\|^2=\|\vect{u}\|^2+2\vect{v}\T\vect{u}+\|\vect{v}\|^2$}
+\dl{\vect{1}\T\vect{1}=n}{$n$ ones}
+\end{deriv}
+\textbf{Claim:} MT $=0$.
+\begin{deriv}
+\dl{\vect{1}\T(\vect{x}-\bar x\vect{1})=\vect{1}\T\vect{x}-\bar x\,\vect{1}\T\vect{1}}{distribute; $\bar x$ is a number}
+\dl{\phantom{\vect{1}\T(\vect{x}-\bar x\vect{1})}=n\bar x-n\bar x=0}{$\vect{1}\T\vect{x}=\sum_ix_i=n\bar x$\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[Normal, both parameters unknown]
+$X_1,\dots,X_n\iid N(\mu,\sigma^2)$, $\theta=(\mu,\sigma^2)\in\R\times(0,\infty)$; the $x_i$ are not all equal (probability one for continuous data). Let $\hat\sigma^2=\frac1n\sum_i(x_i-\bar x)^2>0$.
+\begin{steps}
+  \item \emph{Log-likelihood, split.}
+  \begin{deriv}
+  \dl{\ell(\mu,\sigma^2)=-\frac n2\log(2\pi\sigma^2)-\frac{1}{2\sigma^2}\sum_i(x_i-\mu)^2}{sum of $\log$ of the Normal pdf}
+  \dl{\quad=-\frac n2\log(2\pi\sigma^2)-\frac{n\hat\sigma^2}{2\sigma^2}-\frac{n(\bar x-\mu)^2}{2\sigma^2}}{sum-of-squares split with $c=\mu$: $\sum(x_i-\mu)^2=\sum(x_i-\bar x)^2+n(\bar x-\mu)^2$}
+  \end{deriv}
+  \item \emph{Best $\mu$ for every $\sigma^2$.} $\mu$ appears only in $-\frac{n}{2\sigma^2}(\bar x-\mu)^2\le0$, which is $0$ only at $\mu=\bar x$. So $\boxed{\ell(\mu,\sigma^2)\le\ell(\bar x,\sigma^2)}$, with equality only at $\mu=\bar x$.
+  \item \emph{Best $\sigma^2$ at $\mu=\bar x$.} Write $v=\sigma^2$ and $g(v)=\ell(\bar x,v)$.
+  \begin{deriv}
+  \dl{g(v)=-\frac n2\log(2\pi)-\frac n2\log v-\frac{n\hat\sigma^2}{2v}}{Step-1 with $\mu=\bar x$}
+  \dl{g'(v)=-\frac{n}{2v}+\frac{n\hat\sigma^2}{2v^2}=\frac{n}{2v^2}(\hat\sigma^2-v)}{differentiate; common denominator}
+  \end{deriv}
+  $g'>0$ for $v<\hat\sigma^2$, $g'<0$ for $v>\hat\sigma^2$; by the sign test $\boxed{g(v)\le g(\hat\sigma^2)}$, equality only at $v=\hat\sigma^2$.
+  \item \emph{Combine.} $\ell(\mu,\sigma^2)\le\ell(\bar x,\sigma^2)\le\ell(\bar x,\hat\sigma^2)$, with equality throughout only at $(\bar x,\hat\sigma^2)$.
+\end{steps}
+\[
+  \boxed{\;\hat\mu_{\MLE}=\bar X,\qquad\hat\sigma^2_{\MLE}=\frac1n\sum_{i=1}^n(X_i-\bar X)^2\quad(\text{divisor } n).\;}
+\]
+\end{example}
+
+%=====================================================================
+\section{When calculus fails}
+
+Two things break $\ell'(\theta)=0$: the support depends on $\theta$, or $\Theta$ is finite. Then look at $L$ directly.
+
+\begin{definition}[Order statistics]
+Sorted data $x_{(1)}\le x_{(2)}\le\dots\le x_{(n)}$; $x_{(j)}$ is the $j$-th \dfn{order statistic}. $x_{(1)}=\min_ix_i$, $x_{(n)}=\max_ix_i$.
+\end{definition}
+
+\begin{result}[Products of indicators]
+\[
+  \boxed{\;\prod_{i=1}^n\ind{x_i\le\theta}=\ind{x_{(n)}\le\theta},\qquad\prod_{i=1}^n\ind{\theta\le x_i}=\ind{\theta\le x_{(1)}}.\;}
+\]
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{\prod_i\ind{x_i\le\theta}=1\iff\text{every }x_i\le\theta}{a product of $0$s and $1$s is $1$ iff every factor is $1$}
+\dl{\phantom{\prod_i\ind{x_i\le\theta}=1}\iff x_{(n)}\le\theta}{all $x_i\le\theta$ iff the largest is}
+\end{deriv}
+The second is the same with the smallest, $x_{(1)}$.
+\end{proof}
+
+\begin{example}[Uniform on {$[\theta,2\theta]$}]
+$X_1,\dots,X_n\iid U[\theta,2\theta]$, $\theta>0$; the interval has length $\theta$, so $f(x\given\theta)=\frac1\theta\ind{\theta\le x\le2\theta}$. Show $\hat\theta_{\MLE}=X_{(n)}/2$.
+\begin{deriv}
+\dl{L(\theta)=\theta^{-n}\prod_i\ind{\theta\le x_i}\prod_i\ind{x_i/2\le\theta}}{$\ind{\theta\le x\le2\theta}=\ind{\theta\le x}\ind{x/2\le\theta}$}
+\dl{\phantom{L(\theta)}=\theta^{-n}\,\ind{x_{(n)}/2\le\theta\le x_{(1)}}}{products of indicators, applied to the $x_i$ and to the $x_i/2$}
+\end{deriv}
+The interval is not empty: the data lie in $[\theta_0,2\theta_0]$ for the true $\theta_0$, so $x_{(n)}\le2\theta_0\le2x_{(1)}$. Outside it $L=0$; inside, $\theta^{-n}$ strictly decreases, so the maximum is at the left end:
+\[
+  \boxed{\;\hat\theta_{\MLE}=\frac{X_{(n)}}{2}.\;}
+\]
+$\frac{d}{d\theta}\theta^{-n}=-n\theta^{-n-1}$ is never $0$: the maximum sits on the boundary, where $L$ jumps up from $0$.
+\end{example}
+
+\begin{remark}[Open or closed interval]
+On the open interval $(\theta,2\theta)$, at $\theta=x_{(n)}/2$ the point $x_{(n)}=2\theta$ is excluded, $L=0$ there, and no maximiser exists. Changing a density at two points changes no probability, so take the closed interval; then the MLE exists and is $X_{(n)}/2$.
+\end{remark}
+
+\begin{example}[A triangular density]
+$f(x\given\theta)=\frac{2x}{\theta^2}\ind{0\le x\le\theta}$, $\theta>0$. Find the MLE.
+\begin{deriv}
+\dl{L(\theta)=2^n\Big(\prod_ix_i\Big)\theta^{-2n}\prod_i\ind{x_i\le\theta}}{every $x_i\ge0$, as the data come from $[0,\theta]$}
+\dl{\phantom{L(\theta)}=K\,\theta^{-2n}\,\ind{x_{(n)}\le\theta}}{products of indicators; $K=2^n\prod_ix_i>0$}
+\end{deriv}
+$L=0$ for $\theta<x_{(n)}$ and $K\theta^{-2n}$ strictly decreases for $\theta\ge x_{(n)}$:
+\[
+  \boxed{\;\hat\theta_{\MLE}=X_{(n)}.\;}
+\]
+\end{example}
+
+\begin{example}[A finite parameter space]
+$X_1,\dots,X_n$ iid on $(0,1)$, $\theta\in\Theta=\{0,1\}$, $f(x\given0)=\ind{0<x<1}$, $f(x\given1)=\frac{1}{2\sqrt x}\ind{0<x<1}$. Find the MLE. With finitely many $\theta$, compute $L$ at each and compare.
+\begin{deriv}
+\dl{L(0)=1,\qquad L(1)=2^{-n}\Big(\prod_ix_i\Big)^{-1/2}}{the indicators are $1$ at observed data}
+\dl{L(1)>L(0)\iff\Big(\prod_ix_i\Big)^{1/2}<2^{-n}}{$L(0)=1$; multiply both sides by $(\prod_ix_i)^{1/2}>0$}
+\dl{\phantom{L(1)>L(0)}\iff\prod_ix_i<4^{-n}}{square: both sides positive}
+\dl{\phantom{L(1)>L(0)}\iff\Big(\prod_ix_i\Big)^{1/n}<\frac14}{$n$-th root: both sides positive}
+\end{deriv}
+With the geometric mean $G=\big(\prod_iX_i\big)^{1/n}$,
+\[
+  \boxed{\;\hat\theta_{\MLE}=\ind{G<\tfrac14}.\;}
+\]
+$G<\frac14$ is $-\frac1n\sum_i\log X_i>\log4\approx1.386$. At $G=\frac14$ both values are MLEs.
+\end{example}
+
+%=====================================================================
+\section{Three structural facts about MLEs}
+
+\subsection*{An MLE need not exist}
+
+\begin{example}[A two-value population]
+$X_1,X_2$ iid with $f(0)=\frac1a$, $f(1)=1-\frac1a$, so $f(x\given a)=\big(\frac1a\big)^{\ind{x=0}}\big(1-\frac1a\big)^{\ind{x=1}}$ on $\{0,1\}$ and $\Theta=[1,\infty)$.
+(a) Tabulate $L(a;x_1,x_2)$. (b) Find the MLE when $(x_1,x_2)=(0,1)$. (c) What happens when $(x_1,x_2)=(1,1)$?
+
+(a) With $n_0=\sum_i\ind{x_i=0}$ and $n_1=\sum_i\ind{x_i=1}$, $L(a)=a^{-n_0}\big(1-\frac1a\big)^{n_1}$:
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+ & $x_2=0$ & $x_2=1$\\
+\midrule
+$x_1=0$ & $1/a^2$ & $(a-1)/a^2$\\
+$x_1=1$ & $(a-1)/a^2$ & $(a-1)^2/a^2$\\
+\bottomrule
+\end{tabular}
+\end{center}
+(b) $n_0=n_1=1$:
+\begin{deriv}
+\dl{L(a)=\frac{a-1}{a^2}}{table entry $(0,1)$}
+\dl{L'(a)=\frac{a^2-2a(a-1)}{a^4}=\frac{2-a}{a^3}}{quotient rule}
+\end{deriv}
+$L'>0$ on $[1,2)$ and $L'<0$ on $(2,\infty)$; by the sign test, $\boxed{\hat a_{\MLE}=2}$.
+
+(c) $L(a)=\big(1-\frac1a\big)^2$ strictly increases on $[1,\infty)$ towards $1$ and never reaches it: no value of $a$ maximises $L$, so the MLE does not exist. The data say $P(X=0)=0$, which needs $a=\infty\notin\Theta$.
+\end{example}
+
+\subsection*{An MLE need not be unique}
+
+\begin{example}[A flat likelihood]
+$X_1,\dots,X_n\iid U[\theta,\theta+1]$, $f(x\given\theta)=\ind{\theta\le x\le\theta+1}$.
+\begin{deriv}
+\dl{L(\theta)=\prod_i\ind{\theta\le x_i}\ind{x_i-1\le\theta}}{$\ind{\theta\le x\le\theta+1}=\ind{\theta\le x}\ind{x-1\le\theta}$}
+\dl{\phantom{L(\theta)}=\ind{x_{(n)}-1\le\theta\le x_{(1)}}}{products of indicators}
+\end{deriv}
+$L=1$ on all of $[x_{(n)}-1,\,x_{(1)}]$: every point there is an MLE. The tie $G=\frac14$ above is another case.
+\end{example}
+
+\subsection*{MLEs are invariant}
+
+\begin{definition}[Induced likelihood]
+For $\eta=g(\theta)$, the \dfn{induced likelihood} is $L^*(\eta)=\sup_{\{\theta\in\Theta:\,g(\theta)=\eta\}}L(\theta)$; an MLE of $\eta$ maximises $L^*$. For one-to-one $g$, $L^*(\eta)=L(g^{-1}(\eta))$.
+\end{definition}
+
+\begin{theorem}[Invariance of the MLE]
+If $\hat\theta$ is an MLE of $\theta$, then $\boxed{g(\hat\theta)\text{ is an MLE of }g(\theta)}$, for any function $g$.
+\end{theorem}
+\begin{proof}
+Take any $\eta$.
+\begin{deriv}
+\dl{L^*(\eta)=\sup_{\{\theta:\,g(\theta)=\eta\}}L(\theta)\le\sup_{\theta\in\Theta}L(\theta)}{a sup over a subset is at most the sup over the whole set}
+\dl{\phantom{L^*(\eta)}=L(\hat\theta)}{$\hat\theta$ maximises $L$}
+\dl{\phantom{L^*(\eta)}\le L^*(g(\hat\theta))}{$\hat\theta$ lies in $\{\theta:g(\theta)=g(\hat\theta)\}$, so that sup is $\ge L(\hat\theta)$}
+\end{deriv}
+So $g(\hat\theta)$ maximises $L^*$.
+\end{proof}
+
+\begin{example}[Using invariance]
+In each model the MLE of $g(\theta)$ is $g(\hat\theta_{\MLE})$.
+\begin{itemize}
+  \item Normal: $\hat\sigma_{\MLE}=\sqrt{\hat\sigma^2_{\MLE}}$.
+  \item Bernoulli: variance $p(1-p)$ has MLE $\bar X(1-\bar X)$; odds $p/(1-p)$ has MLE $\bar X/(1-\bar X)$.
+  \item Exponential: the mean $1/\lambda$ has MLE $1/\hat\lambda_{\MLE}=\bar X$.
+  \item $U[\theta,2\theta]$: the mean $\frac32\theta$ has MLE $\frac32\cdot\frac{X_{(n)}}{2}=\frac34X_{(n)}$.
+\end{itemize}
+\end{example}
