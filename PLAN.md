@@ -182,8 +182,8 @@ All sources are in `src/` (gitignored, local only).
 
 **Scan map.**
 - `bda.pdf`: p1–62 probability (skip); p64–89 inference; p89–103 learning and bias–variance; p104–113 regression spine; p114–140 taxonomy and MVN; p122–176 linear algebra; p177–188 PCA; OUT p188–191.
-- `rtsm.pdf`: p1–61 probability (skip); slides p136–157 intro, p158–173 linear algebra, p193–206 multivariate; p94–135 MLR, ANOVA, tests, estimability; p391–446 SLR → MLR (the most complete copy); p450–499 time series. Duplicates: p240–269 = p210–239; p354–390 repeat earlier material; p434–445 repeat p415–428. Blank p326–333. OUT p334–353, p448–449.
-- FE: `fe_general_full.pdf` p03–10; `fe_slides.pdf` p01–16; `stats_training.pdf`; `fin_econ.pdf`.
+- `rtsm.pdf`: p1–61 probability (skip); slides p136–157 intro, p158–173 linear algebra, p193–206 multivariate; p94–135 MLR, ANOVA, tests, estimability; p391–446 SLR → MLR (the most complete copy); p450–499 time series. Duplicates: p240–269 = p210–239; p210–229 = p354–373 = p64–83 (byte-identical); p230 = p84 = p374; p231 = p85 = p375; p234–239 = p378–383 = p88–93 (some without the pink marks); p475 = p450; p434–445 repeat p415–428. Blank p326–333. OUT p334–353, p448–449.
+- FE: `fe_general_full.pdf` p03–10; `fe_slides.pdf` p01–16 (p5 = p4); `stats_training.pdf`; `fin_econ.pdf`.
 
 **Known errors in the notes (correct silently, D11).**
 - RTSM linear algebra: p216 P_S examples swapped; p217 "P_S = 3".
@@ -213,11 +213,11 @@ Every row in §6 is `accepted`; `make pdf` builds the whole book with 0 errors, 
 | `src/text/big_data_analysis_notes.md` (secs 10–33) | 4, 5, 6, 8, 10, 12, 15, 19 |
 | `src/text/regression_complete.md` (A–J: algebra, random vectors, MLR, estimability, inference, correlation model, PCA) | 7, 9–19 |
 | `src/fin_econ/08–13, 19, 20.tex` | 12, 26, 27, 28, 19, 21 |
-| `src/text/rtsm_text.txt` (rtsm text-layer pages) | spot checks |
+| `src/text/rtsm_text.txt` (rtsm slides p136–209, the only real text layer) | spot checks |
 | `src/text/rtsm_ts.md`, `src/text/rtsm_qf.md`, `src/text/fe_scans.md` (Sonnet transcriptions) | 20–25; 7, 9, 11; 26–28 |
 | exam papers, `src/text/*solutions*.md` | boxed examples |
 
-**Session 0 (setup, no chapters)** — status: todo.
+**Session 0 (setup, no chapters)** — status: done 19 Nov 2026. `rtsm_text.txt` holds only the typed slides p136–209: the handwritten pages' text layer is OCR noise. `rtsm_qf.md` transcribes every algebra page in full (none was fully covered by `regression_complete` B). Agents' `[?]` marks: rtsm_ts 41, rtsm_qf 11, fe_scans 13; check a `[?]` against the scan before using that line.
 1. HTML → text, zero tokens: stdlib `html.parser` turns each `src/solutions/*.html` into `src/text/<name>.md` (headings kept, MathJax kept as LaTeX); `pdftotext` writes rtsm text-layer pages to `src/text/rtsm_text.txt` with `## p<N>` markers. No script kept.
 2. Sonnet transcription: 3 background agents (`model: sonnet`), one per block: RTSM time series p450–499 → `rtsm_ts.md`; RTSM quadratic forms p88–93, 234–239, 374–383 plus algebra pages not in `regression_complete` B → `rtsm_qf.md`; `fe_general_full` p3–10, `fe_slides` p1–16, `fin_econ.pdf` p36–42 → `fe_scans.md`. Each renders its own pages with `pdftoppm` into its scratch dir and writes one `## p<N>` per page: faithful, LaTeX maths, no rewording, `[?]` where illegible, duplicates/OUT per §8. Spot-check 2 pages per block against the image.
 3. `tools/layout.py` + `make layout`, written in the skill template first, then copied here: `pdftotext -layout build/review.pdf` page by page; flag a page whose last line is a box title (`^(Definition|Theorem|Result|Lemma|Corollary|Example) \d+\.\d+`) or a section heading, and a page that starts with a lone QED. Must be silent on chapters 1–3 and catch one hand-made bad case.
