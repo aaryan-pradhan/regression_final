@@ -1,0 +1,286 @@
+\chapter{Properties of estimators}
+
+Chapter~1 built estimators, mostly MLEs; this chapter asks how good a random guess is.
+
+\begin{setup}
+Population $f(x\given\theta)$, $\theta\in\Theta$, mean $\mu$, variance $\sigma^2$; sample $S=(X_1,\dots,X_n)\sim F_X^{\,n}$, $\vect{X}=(X_1,\dots,X_n)\T$; an estimator $T=T(S)$ of $g(\theta)$. $T$ is random because $S$ is, so its averages are over samples: $\E_S$, $\Var_S$.
+\end{setup}
+
+%=====================================================================
+\section{Unbiasedness}
+
+\begin{definition}[Unbiased estimator and bias]
+$T(S)$ is \dfn{unbiased} for $g(\theta)$ if
+\[
+  \boxed{\;\E_S\big[T(S)\big]=g(\theta)\quad\text{for every }\theta\in\Theta.\;}
+\]
+Its \dfn{bias} is $\Bias_\theta(T)=\E_S[T(S)]-g(\theta)$. ``For every $\theta$'' means it is proved on paper, not checked at a few values.
+\end{definition}
+
+\begin{example}[The sample mean and two rivals]
+Three estimators of $\mu$; independence gives $\Var_S\big(\sum_ia_iX_i\big)=\sigma^2\sum_ia_i^2$.
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{@{}lll@{}}
+\toprule
+$T$ & $\E_S[T]$ & $\Var_S(T)$\\
+\midrule
+$\bar X=\frac1n\sum_iX_i$ & $\frac1n\cdot n\mu=\mu$ & $\frac1{n^2}\cdot n\sigma^2=\frac{\sigma^2}{n}$\\
+$X_1$ & $\mu$ & $\sigma^2$\\
+$\frac{X_1+2X_2}{3}$ & $\frac{\mu+2\mu}{3}=\mu$ & $\frac{1+4}{9}\sigma^2=\frac59\sigma^2$\\
+\bottomrule
+\end{tabular}
+\end{center}
+All three are unbiased; $\bar X$ has the smallest variance, and it goes to $0$ as $n\to\infty$.
+\end{example}
+
+\begin{example}[Is the average of products unbiased?]
+$(X_1,Y_1),\dots,(X_n,Y_n)$ iid bivariate Normal, $\E_X X_i=\E_Y Y_i=0$, $\Var_X(X_i)=\Var_Y(Y_i)=1$, correlation $\rho\in(-1,1)$ unknown. Is $W_n=\frac1n\sum_iX_iY_i$ unbiased for $\rho$?
+\begin{deriv}
+\dl{\Cov_{X,Y}(X_i,Y_i)=\E_{X,Y}[X_iY_i]-\E_X X_i\,\E_Y Y_i}{$\Cov_{X,Y}(U,V)=\E_{X,Y}[UV]-\E_X U\,\E_Y V$}
+\dl{\phantom{\Cov_{X,Y}(X_i,Y_i)}=\E_{X,Y}[X_iY_i]}{both means are $0$}
+\dl{\rho=\frac{\Cov_{X,Y}(X_i,Y_i)}{\sqrt{1\cdot1}}=\E_{X,Y}[X_iY_i]}{correlation $=\Cov/\sqrt{\Var\cdot\Var}$; both variances $1$}
+\dl{\E_S[W_n]=\frac1n\sum_{i=1}^n\E_{X,Y}[X_iY_i]=\frac1n\cdot n\rho=\rho}{linearity of $\E_S$; each term is $\rho$}
+\end{deriv}
+$\E_S[W_n]=\rho$ for every $\rho$: \textbf{yes}, $W_n$ is unbiased.
+\end{example}
+
+All three rivals of $\bar X$ are weighted sums $\vect{a}\T\vect{X}=\sum_ia_iX_i$.
+
+\begin{definition}[Linear estimator, BLUE]
+$T=\vect{a}\T\vect{X}$ with fixed $\vect{a}\in\R^n$ is a \dfn{linear estimator}. A \dfn{best linear unbiased estimator} (\dfn{BLUE}) is a linear unbiased estimator whose variance is no larger than that of any other linear unbiased estimator, for every $\theta$.
+\end{definition}
+
+\begin{result}[Equal weights are best: $\bar X$ is the BLUE of $\mu$]
+$\vect{a}\T\vect{X}$ is unbiased for $\mu$ exactly when $\vect{1}\T\vect{a}=1$, and then
+\[
+  \boxed{\;\Var_S(\vect{a}\T\vect{X})=\sigma^2\,\vect{a}\T\vect{a}\;\ge\;\frac{\sigma^2}{n}=\Var_S(\bar X),\;}
+\]
+with equality only at $\vect{a}=\frac1n\vect{1}$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{\E_S[\vect{a}\T\vect{X}]=\sum_ia_i\mu=\mu\,\vect{1}\T\vect{a}}{linearity; $\E_X X_i=\mu$}
+\dl{\phantom{\E_S[\vect{a}\T\vect{X}]}=\mu\ \text{for every }\mu\iff\vect{1}\T\vect{a}=1}{compare coefficients of $\mu$}
+\dl{\Var_S(\vect{a}\T\vect{X})=\sum_ia_i^2\sigma^2=\sigma^2\,\vect{a}\T\vect{a}}{independent: $\Var_S(\sum_ia_iX_i)=\sum_ia_i^2\Var_X(X_i)$}
+\dl{0\le\big\|\vect{a}-\tfrac1n\vect{1}\big\|^2=\vect{a}\T\vect{a}-\tfrac2n\vect{1}\T\vect{a}+\tfrac1{n^2}\vect{1}\T\vect{1}}{a squared length is $\ge0$; expand $(\vect{u}-\vect{v})\T(\vect{u}-\vect{v})$}
+\dl{\phantom{0}=\vect{a}\T\vect{a}-\tfrac2n+\tfrac1n=\vect{a}\T\vect{a}-\tfrac1n}{$\vect{1}\T\vect{a}=1$, $\vect{1}\T\vect{1}=n$}
+\end{deriv}
+Equality holds only when $\vect{a}-\frac1n\vect{1}=\vect{0}$.
+\end{proof}
+
+Linear and unbiased are both needed: $0.9\bar X$ has smaller variance but is biased. In regression the same statement is the Gauss--Markov theorem.
+
+\subsection*{An unbiased estimator of the variance}
+
+\begin{theorem}[Expected sum of squares about the mean]
+If $X_1,\dots,X_n$ are iid with mean $\mu$ and variance $\sigma^2$,
+\[
+  \boxed{\;\E_S\Big[\sum_{i=1}^n(X_i-\bar X)^2\Big]=(n-1)\,\sigma^2.\;}
+\]
+\end{theorem}
+\begin{proof}
+Expand $(X_i-\bar X)^2=X_i^2-2X_i\bar X+\bar X^2$ and take each piece.
+\begin{steps}
+  \item \emph{(A) the square.}
+  \begin{deriv}
+  \dl{\E_S[X_i^2]=\sigma^2+\mu^2}{$\E_U[U^2]=\Var_U(U)+(\E_U U)^2$}
+  \end{deriv}
+  \item \emph{(B) the cross product.}
+  \begin{deriv}
+  \dl{\E_S[X_i\bar X]=\frac1n\Big(\E_S[X_i^2]+\sum_{k\ne i}\E_S[X_iX_k]\Big)}{$X_i\bar X=\frac1n\big(X_i^2+\sum_{k\ne i}X_iX_k\big)$; linearity}
+  \dl{\phantom{\E_S[X_i\bar X]}=\frac1n\big[(\sigma^2+\mu^2)+(n-1)\mu^2\big]}{(A); independent: $\E_S[X_iX_k]=\mu\cdot\mu$}
+  \dl{\phantom{\E_S[X_i\bar X]}=\frac{\sigma^2}{n}+\mu^2}{collect}
+  \end{deriv}
+  \item \emph{(C) the mean squared.}
+  \begin{deriv}
+  \dl{\E_S[\bar X^2]=\Var_S(\bar X)+(\E_S\bar X)^2=\frac{\sigma^2}{n}+\mu^2}{$\E_U[U^2]=\Var_U(U)+(\E_U U)^2$; $\E_S\bar X=\mu$, $\Var_S(\bar X)=\sigma^2/n$}
+  \end{deriv}
+  \item \emph{Combine (A) $-2$(B) $+$ (C), then sum.}
+  \begin{deriv}
+  \dl{\E_S[(X_i-\bar X)^2]=(\sigma^2+\mu^2)-2\Big(\frac{\sigma^2}{n}+\mu^2\Big)}{linearity, (A), (B)}
+  \dl{\qquad\qquad+\Big(\frac{\sigma^2}{n}+\mu^2\Big)}{(C)}
+  \dl{\phantom{\E_S[(X_i-\bar X)^2]}=\frac{n-1}{n}\sigma^2}{the $\mu^2$ terms cancel}
+  \dl{\E_S\Big[\sum_i(X_i-\bar X)^2\Big]=n\cdot\frac{n-1}{n}\sigma^2=(n-1)\sigma^2}{$n$ identical terms\qedhere}
+  \end{deriv}
+\end{steps}
+\end{proof}
+
+\begin{corollary}[The unbiased sample variance]
+\[
+  \boxed{\;s^2=\frac{1}{n-1}\sum_{i=1}^n(X_i-\bar X)^2\ \text{ is unbiased for }\sigma^2.\;}
+\]
+The MLE $\hat\sigma^2_{\MLE}=\frac1n\sum_i(X_i-\bar X)^2$ is biased:
+\[
+  \boxed{\;\E_S\big[\hat\sigma^2_{\MLE}\big]=\frac{n-1}{n}\sigma^2,\qquad\Bias\big(\hat\sigma^2_{\MLE}\big)=-\frac{\sigma^2}{n}.\;}
+\]
+\end{corollary}
+\begin{proof}
+Divide the expected sum of squares, $(n-1)\sigma^2$, by $n-1$, then by $n$.
+\end{proof}
+
+\begin{example}[A finite population]
+$N$ values $x_1,\dots,x_N$, each with probability $\frac1N$: $\mu=\frac1N\sum_jx_j$, $\sigma^2=\frac1N\sum_j(x_j-\mu)^2$. Draw $Y_1,\dots,Y_n$ iid (with replacement). Then $\bar Y$ is unbiased for $\mu$; $\frac1n\sum_i(Y_i-\bar Y)^2$ has mean $\frac{n-1}{n}\sigma^2$; $\frac1{n-1}\sum_i(Y_i-\bar Y)^2$ is unbiased for $\sigma^2$. The theorem needs only iid draws with finite variance.
+\end{example}
+
+\begin{definition}[Asymptotically unbiased]
+$T_n=T(X_1,\dots,X_n)$ is \dfn{asymptotically unbiased} for $g(\theta)$ if $\E_S[T_n]\to g(\theta)$ as $n\to\infty$, for every $\theta$.
+\end{definition}
+
+$\E_S[\hat\sigma^2_{\MLE}]=\big(1-\frac1n\big)\sigma^2\to\sigma^2$: biased, but asymptotically unbiased.
+
+%=====================================================================
+\section{Mean squared error}
+
+\begin{definition}[Mean squared error]
+The \dfn{mean squared error} of $T$ for $g(\theta)$ is $\MSE_\theta(T)=\E_S\big[(T(S)-g(\theta))^2\big]$.
+\end{definition}
+
+\begin{theorem}[MSE $=$ Variance $+$ Bias$^2$]
+\[
+  \boxed{\;\E_S\big[(T-g(\theta))^2\big]=\underbrace{\E_S\big[(T-\E_ST)^2\big]}_{\Var_S(T)}+\underbrace{\big(\E_ST-g(\theta)\big)^2}_{\Bias_\theta(T)^2}.\;}
+\]
+\end{theorem}
+\begin{proof}
+Write $g$ for $g(\theta)$.
+\begin{deriv}
+\dl{\E_S\big[(T-g)^2\big]=\E_S\Big[\big((T-\E_ST)+(\E_ST-g)\big)^2\Big]}{add and subtract $\E_ST$}
+\dl{\quad=\E_S\big[(T-\E_ST)^2\big]+\text{MT}+(\E_ST-g)^2}{expand $(a+b)^2$; $\text{MT}=2\E_S\big[(T-\E_ST)(\E_ST-g)\big]$; $(\E_ST-g)^2$ is a number}
+\end{deriv}
+\textbf{Claim:} MT $=0$.
+\begin{deriv}
+\dl{\text{MT}=2(\E_ST-g)\,\E_S\big[T-\E_ST\big]}{$(\E_ST-g)$ is free of $S$: take it out}
+\dl{\phantom{\text{MT}}=2(\E_ST-g)(\E_ST-\E_ST)=0}{linearity\qedhere}
+\end{deriv}
+\end{proof}
+
+For an unbiased $T$, MSE is the variance. A slightly biased $T$ with much smaller variance can have the smaller MSE.
+
+\begin{example}[MLE and MSE for the triangular density]
+$f(x\given\theta)=\frac{2x}{\theta^2}\ind{0\le x\le\theta}$, $\theta>0$. Chapter~1 found $\hat\theta_{\MLE}=M=X_{(n)}$. Find its MSE.
+\begin{steps}
+  \item \emph{Law of the maximum.}
+  \begin{deriv}
+  \dl{P(X_i\le x)=\int_0^x\frac{2t}{\theta^2}\,dt=\frac{x^2}{\theta^2}}{integrate the pdf, $0\le x\le\theta$}
+  \dl{P(M\le x)=\prod_{i=1}^nP(X_i\le x)=\frac{x^{2n}}{\theta^{2n}}}{$M\le x$ iff every $X_i\le x$; independent}
+  \dl{f_M(x)=\frac{2n\,x^{2n-1}}{\theta^{2n}}\ind{0\le x\le\theta}}{differentiate the cdf}
+  \end{deriv}
+  \item \emph{Two moments.}
+  \begin{deriv}
+  \dl{\E_S[M]=\int_0^\theta x\,\frac{2nx^{2n-1}}{\theta^{2n}}\,dx=\frac{2n}{2n+1}\theta}{$\int_0^\theta x^{2n}dx=\frac{\theta^{2n+1}}{2n+1}$}
+  \dl{\E_S[M^2]=\int_0^\theta x^2\,\frac{2nx^{2n-1}}{\theta^{2n}}\,dx=\frac{n}{n+1}\theta^2}{$\int_0^\theta x^{2n+1}dx=\frac{\theta^{2n+2}}{2n+2}$}
+  \end{deriv}
+  \item \emph{MSE.}
+  \begin{deriv}
+  \dl{\MSE=\E_S[M^2]-2\theta\,\E_S[M]+\theta^2}{expand $(M-\theta)^2$; linearity}
+  \dl{\phantom{\MSE}=\theta^2\Big[\frac{n}{n+1}-\frac{4n}{2n+1}+1\Big]}{Step-2}
+  \dl{\phantom{\MSE}=\frac{\theta^2}{(n+1)(2n+1)}}{common denominator $(n+1)(2n+1)$; numerator $n(2n+1)-4n(n+1)+(n+1)(2n+1)=1$}
+  \end{deriv}
+\end{steps}
+\[
+  \boxed{\;\MSE\big(X_{(n)}\big)=\frac{\theta^2}{(n+1)(2n+1)}\;}
+\]
+Bias $=\frac{2n}{2n+1}\theta-\theta=-\frac{\theta}{2n+1}$: the maximum falls short of $\theta$, yet the MSE goes to $0$ like $1/n^2$.
+\end{example}
+
+%=====================================================================
+\section{Consistency}
+
+\begin{definition}[Consistent estimator]
+$T_n=T(X_1,\dots,X_n)$ is \dfn{consistent} for $g(\theta)$ if $T_n\to g(\theta)$ in probability, for every $\theta\in\Theta$:
+\[
+  \boxed{\;\lim_{n\to\infty}P_S\big(|T_n-g(\theta)|>\varepsilon\big)=0\quad\text{for every }\varepsilon>0.\;}
+\]
+\end{definition}
+
+\begin{theorem}[MSE going to zero is enough]
+If $\MSE_\theta(T_n)\to0$ for every $\theta$ (equivalently, bias $\to0$ and variance $\to0$), then $T_n$ is consistent.
+\end{theorem}
+\begin{proof}
+Write $g$ for $g(\theta)$.
+\begin{deriv}
+\dl{P_S\big(|T_n-g|>\varepsilon\big)=P_S\big((T_n-g)^2>\varepsilon^2\big)}{both sides $\ge0$: square}
+\dl{\phantom{P_S\big(|T_n-g|>\varepsilon\big)}\le\frac{\E_S[(T_n-g)^2]}{\varepsilon^2}=\frac{\MSE_\theta(T_n)}{\varepsilon^2}}{Markov: $P(U\ge a)\le\E_U U/a$ for $U\ge0$, $a>0$}
+\dl{\phantom{P_S\big(|T_n-g|>\varepsilon\big)}\to0}{MSE $\to0$, $\varepsilon$ fixed\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[Example and non-example]
+$X_1,\dots,X_n\iid N(\mu,\sigma^2)$. $\bar X$ is unbiased with $\Var_S(\bar X)=\sigma^2/n\to0$, so its MSE $\to0$: consistent. $X_1\sim N(\mu,\sigma^2)$ for every $n$, so $P_S(|X_1-\mu|>\varepsilon)=2\big(1-\Phi(\varepsilon/\sigma)\big)$, a fixed positive number ($\Phi$ the $N(0,1)$ cdf): not consistent. Both are unbiased; only one improves with data.
+\end{example}
+
+\begin{example}[Uniform on {$[\theta,2\theta]$}: unbiased fix and consistency]
+$X_i\iid U[\theta,2\theta]$, $\theta>0$; Chapter~1 found $\hat\theta_{\MLE}=X_{(n)}/2$. (b) Find an unbiased estimator based on the MLE. (c) Show $P_S\big(|X_{(n)}/2-\theta|>\varepsilon\big)\to0$.
+\begin{steps}
+  \item \emph{Law of the maximum.}
+  \begin{deriv}
+  \dl{P(X_i\le x)=\frac{x-\theta}{\theta},\quad\theta\le x\le2\theta}{uniform cdf}
+  \dl{P(X_{(n)}\le x)=\Big(\frac{x-\theta}{\theta}\Big)^n}{all $X_i\le x$; independent}
+  \dl{f_{X_{(n)}}(x)=\frac{n(x-\theta)^{n-1}}{\theta^n}\ind{\theta\le x\le2\theta}}{differentiate}
+  \end{deriv}
+  \item \emph{Mean; the unbiased fix.}
+  \begin{deriv}
+  \dl{\E_S[X_{(n)}]=\int_0^\theta(u+\theta)\frac{nu^{n-1}}{\theta^n}\,du}{substitute $u=x-\theta$}
+  \dl{\phantom{\E_S[X_{(n)}]}=\frac{n}{n+1}\theta+\theta=\frac{2n+1}{n+1}\theta}{$\int_0^\theta u^n du=\frac{\theta^{n+1}}{n+1}$, $\int_0^\theta u^{n-1}du=\frac{\theta^n}{n}$}
+  \dl{\E_S\Big[\frac{X_{(n)}}{2}\Big]=\frac{2n+1}{2n+2}\theta\ne\theta}{the MLE is biased}
+  \end{deriv}
+  \[
+    \boxed{\;T=\frac{n+1}{2n+1}X_{(n)}\quad\text{has}\quad\E_S[T]=\frac{n+1}{2n+1}\cdot\frac{2n+1}{n+1}\theta=\theta.\;}
+  \]
+  \item \emph{Consistency.} Take $0<\varepsilon<\theta/2$; for $\varepsilon\ge\theta/2$ the probability is already $0$.
+  \begin{deriv}
+  \dl{P_S\Big(\Big|\frac{X_{(n)}}{2}-\theta\Big|>\varepsilon\Big)=P_S\big(X_{(n)}<2\theta-2\varepsilon\big)}{$X_{(n)}\le2\theta$, so $\frac{X_{(n)}}{2}\le\theta$}
+  \dl{\phantom{P_S}=\Big(1-\frac{2\varepsilon}{\theta}\Big)^n\to0}{Step-1 at $x=2\theta-2\varepsilon$; $0\le1-\frac{2\varepsilon}{\theta}<1$}
+  \end{deriv}
+\end{steps}
+The MLE is biased but consistent.
+\end{example}
+
+What holds for MLEs in general: they need not be unbiased ($\hat\sigma^2_{\MLE}$, $X_{(n)}/2$, $X_{(n)}$ are all biased). Under regularity conditions (the support does not depend on $\theta$; $L$ is smooth in $\theta$ with three derivatives whose expectations exist) an MLE is consistent and, for large $n$, approximately Normal with mean $\theta$ and variance shrinking like $1/n$. Without them an MLE need not be consistent.
+
+\begin{example}[Asymptotic normality for the Binomial]
+$X_i\iid\text{Bin}(10,p)$, $\hat p=\frac{\sum_iX_i}{10n}$ (Chapter~1).
+\begin{deriv}
+\dl{\E_S[\hat p]=\frac{n\cdot10p}{10n}=p}{$\E_X X_i=10p$}
+\dl{\Var_S(\hat p)=\frac{n\cdot10p(1-p)}{(10n)^2}=\frac{p(1-p)}{10n}}{independent; $\Var_X(X_i)=10p(1-p)$}
+\end{deriv}
+By the CLT, $\frac{\hat p-p}{\sqrt{p(1-p)/(10n)}}\to N(0,1)$ in distribution; $p$ near $0$ or $1$ needs more data.
+\end{example}
+
+%=====================================================================
+\section{The method of moments}
+
+Here is a second, older recipe for estimators.
+
+\begin{definition}[Method of moments]
+The \dfn{method of moments} equates sample and population moments,
+\[
+  \boxed{\;\frac1n\sum_{i=1}^nX_i^k=\E_X[X^k],\qquad k=1,2,\dots\;}
+\]
+with as many equations as unknown parameters, and solves. The solution is $\hat\theta_{\text{MME}}$.
+\end{definition}
+
+\begin{example}[Normal, Exponential, Bernoulli]
+In all three the method of moments gives the MLE.
+\begin{itemize}
+  \item $N(\mu,\sigma^2)$: $k=1$ gives $\hat\mu=\bar X$; $k=2$ gives $\frac1n\sum_iX_i^2=\sigma^2+\mu^2$, so $\hat\sigma^2=\frac1n\sum_iX_i^2-\bar X^2=\frac1n\sum_i(X_i-\bar X)^2$, by the sum-of-squares split $\sum_ix_i^2=\sum_i(x_i-\bar x)^2+n\bar x^2$.
+  \item Exp$(\lambda)$: $\bar X=1/\lambda$, so $\hat\lambda=1/\bar X$.
+  \item Bernoulli$(p)$: $\bar X=p$, so $\hat p=\bar X$.
+\end{itemize}
+\end{example}
+
+\begin{example}[Gamma: the coconut trees]
+Heights $Y\sim\text{Gamma}(\alpha,\lambda)$, $f(y)=\frac{\lambda^\alpha}{\Gamma(\alpha)}y^{\alpha-1}e^{-\lambda y}\ind{y>0}$, mean $\frac\alpha\lambda$, variance $\frac{\alpha}{\lambda^2}$. Let $s_1^2=\frac1n\sum_i(y_i-\bar y)^2$.
+\begin{deriv}
+\dl{\bar y=\frac\alpha\lambda}{$k=1$}
+\dl{\frac1n\sum_iy_i^2=\frac{\alpha}{\lambda^2}+\frac{\alpha^2}{\lambda^2}}{$k=2$: $\E_Y[Y^2]=\Var_Y(Y)+(\E_Y Y)^2$}
+\dl{s_1^2=\frac{\alpha}{\lambda^2}}{subtract $\bar y^2=\frac{\alpha^2}{\lambda^2}$; split $\frac1n\sum y_i^2-\bar y^2=s_1^2$}
+\dl{\lambda=\frac{\bar y}{s_1^2},\qquad\alpha=\lambda\bar y}{divide the first by the third}
+\end{deriv}
+\[
+  \boxed{\;\hat\lambda_{\text{MME}}=\frac{\bar y}{s_1^2},\qquad\hat\alpha_{\text{MME}}=\frac{\bar y^{\,2}}{s_1^2}\;}
+\]
+The Gamma MLE has no closed form; that is why moments are used here.
+\end{example}
+
+The method needs the moments to exist: for the Cauchy law even $\E_X[X]$ does not, and the method cannot start.
