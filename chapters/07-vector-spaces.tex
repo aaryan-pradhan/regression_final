@@ -235,7 +235,8 @@ Orthonormal means $\vect{v}_i\T\vect{v}_j=\ind{i=j}$.
   \item \emph{(b) for $S$.} For $\vect{v}=\sum_jc_j\vect{v}_j\in S$:
   \begin{deriv}
   \dl{P_S\vect{v}=\textstyle\sum_i\vect{v}_i\sum_jc_j\,\vect{v}_i\T\vect{v}_j}{substitute $\vect{v}$}
-  \dl{\quad=\textstyle\sum_i\vect{v}_i\sum_jc_j\,\ind{i=j}=\sum_ic_i\vect{v}_i=\vect{v}}{orthonormal}
+  \dl{\quad=\textstyle\sum_i\vect{v}_i\sum_jc_j\,\ind{i=j}}{orthonormal}
+  \dl{\quad=\textstyle\sum_ic_i\vect{v}_i=\vect{v}}{only $j=i$ survives}
   \end{deriv}
   \item \emph{(a) for $S^\perp$.} For any $\vect{v}$ and each $j$:
   \begin{deriv}
@@ -286,7 +287,8 @@ For matrices of matching sizes, $A$ with $n$ rows, four facts hold.
   \begin{deriv}
   \dl{[A:B]\begin{pmatrix}\vect{x}\\\vect{z}\end{pmatrix}=A\vect{x}+B\vect{z}}{(1): block multiplication}
   \dl{AB\vect{x}=A(B\vect{x})\in\C(A)}{(2): $AB\vect{x}$ is $A$ times a vector}
-  \dl{\dim\C(A)^\perp=n-\dim\C(A)=n-\rank A}{(4): $\dim S^\perp=\dim V-\dim S$ with $V=\R^n$}
+  \dl{\dim\C(A)^\perp=n-\dim\C(A)}{(4): $\dim S^\perp=\dim V-\dim S$ with $V=\R^n$}
+  \dl{\quad=n-\rank A}{$\rank A=\dim\C(A)$}
   \end{deriv}
   The two ends of (2) are $B=I$, where $\C(AB)=\C(A)$, and $B=0$, where $\C(AB)=\{\vect{0}\}$.
   \item \emph{(3), first half: $\C(AA\T)\subseteq\C(A)$.} This is (2) with $B=A\T$.
@@ -324,6 +326,7 @@ For an $n\times m$ matrix $A$, $\rank(A\T A)=\rank A$. So the $m\times m$ matrix
 In regression $A=\X$, of size $n\times(k+1)$: $\X\T\X$ is invertible exactly when the columns of $\X$ are linearly independent.
 
 %=====================================================================
+\keepwithnext{14\baselineskip}
 \section{Generalised inverses}
 
 \begin{definition}[Generalised inverse]
@@ -388,8 +391,9 @@ Put $D=AGA\T A-A$.
 Let $P=AGA\T$, with $G$ a generalised inverse of $A\T A$.
 \begin{deriv}
 \dl{P\vect{v}=A(GA\T\vect{v})\in\C(A)}{(a) for $\C(A)$}
-\dl{\vect{v}=A\vect{x}\ \Rightarrow\ P\vect{v}=AGA\T A\vect{x}=A\vect{x}=\vect{v}}{(b) for $\C(A)$; lemma: $AGA\T A=A$}
-\dl{A\T(I-P)\vect{v}=(A\T-A\T AGA\T)\vect{v}=\vect{0}}{(a) for $\C(A)^\perp$; lemma: $A\T AGA\T=A\T$}
+\dl{\vect{v}=A\vect{x}\ \Rightarrow\ P\vect{v}=AGA\T A\vect{x}}{(b) for $\C(A)$: substitute $\vect{v}$}
+\dl{\quad=A\vect{x}=\vect{v}}{lemma: $AGA\T A=A$}
+\dl{A\T(I-P)\vect{v}=(A\T-A\T AGA\T)\vect{v}=\vect{0}}{(a) for $\C(A)^\perp$; lemma: $A\T AGA\T=A\T$; so $(I-P)\vect{v}$ is orthogonal to every column of $A$}
 \dl{\vect{w}\in\C(A)^\perp\ \Rightarrow\ A\T\vect{w}=\vect{0}\ \Rightarrow\ P\vect{w}=\vect{0}}{$\vect{w}$ is orthogonal to every column of $A$}
 \dl{\quad\Rightarrow\ (I-P)\vect{w}=\vect{w}}{(b) for $\C(A)^\perp$\qedhere}
 \end{deriv}
@@ -412,7 +416,8 @@ $P_A$ and $I-P_A$ are symmetric and idempotent, and $\C(P_A)=\C(A)$, so $\rank P
   \dl{P_A^2=A(A\T A)^{-1}A\T A(A\T A)^{-1}A\T}{multiply}
   \dl{\quad=A(A\T A)^{-1}A\T=P_A}{$A\T A(A\T A)^{-1}=I_m$}
   \dl{(I-P_A)^2=I-2P_A+P_A^2}{multiply out}
-  \dl{\quad=I-P_A}{$P_A^2=P_A$; and $(I-P_A)\T=I-P_A\T=I-P_A$}
+  \dl{\quad=I-P_A}{$P_A^2=P_A$}
+  \dl{(I-P_A)\T=I-P_A\T=I-P_A}{transpose term by term; $P_A\T=P_A$}
   \end{deriv}
   \item \emph{Column space and rank.}
   \begin{deriv}
