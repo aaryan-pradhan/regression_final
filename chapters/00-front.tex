@@ -1,0 +1,73 @@
+\chapter{Before you start}
+
+\section*{Probability you are assumed to know}
+
+\begin{setup}[Assumed, never re-taught]
+Revise these before Chapter~1; every later page uses them freely.
+\begin{itemize}
+  \item \textbf{Random variable} $X$: cdf $F_X(x)=P(X\le x)$, pmf or pdf $f_X$; the Bernoulli, Binomial, Poisson, Uniform, Exponential, Gamma and Normal laws with their means and variances.
+  \item \textbf{Expectation} $\E_X[g(X)]=\sum_x g(x)f_X(x)$ or $\int g(x)f_X(x)\,dx$, linear: $\E_X[aX+b]=a\E_X[X]+b$.
+  \item \textbf{Variance and covariance}: $\Var_X(X)=\E_X[X^2]-(\E_X X)^2$, $\Var_X(aX+b)=a^2\Var_X(X)$; $\Cov_{X,Y}(X,Y)=\E_{X,Y}[XY]-\E_X X\,\E_Y Y$; correlation $\Cov_{X,Y}(X,Y)/\sqrt{\Var_X(X)\Var_Y(Y)}\in[-1,1]$.
+  \item \textbf{Independence and iid}: the joint pdf is the product of the marginals; $\E_{X,Y}[XY]=\E_X X\,\E_Y Y$; variances of independent variables add; functions of disjoint groups of independent variables are independent; a sum of independent Normals is Normal.
+  \item \textbf{Conditioning}: $f_{Y\given X}(y\given x)=f_{X,Y}(x,y)/f_X(x)$; $\E_{Y\given X}[g(Y)]$ is a function of $X$; the tower rule $\E_{X,Y}[g(X,Y)]=\E_X\big[\E_{Y\given X}[g(X,Y)]\big]$.
+  \item \textbf{Change of variables}: if $\vect{y}=A\vect{z}$ with $A$ invertible, $f_{\vect{Y}}(\vect{y})=f_{\vect{Z}}(A^{-1}\vect{y})\,|\det A^{-1}|$.
+  \item \textbf{Normal facts}: $Z\sim N(0,1)$ has $\E_Z[Z^4]=3$; a standard bivariate Normal pair $(X,Y)$ with correlation $\rho$ is $Y=\rho X+\sqrt{1-\rho^2}\,Z$, with $Z\sim N(0,1)$ independent of $X$.
+  \item \textbf{Inequalities and limits}: Markov $P(X\ge a)\le\E_X[X]/a$ for $X\ge0$; Chebyshev $P(|X-\mu|\ge\varepsilon)\le\sigma^2/\varepsilon^2$; the weak law of large numbers; the central limit theorem; convergence in probability and in distribution.
+  \item \textbf{Calculus and matrices}: derivatives, the mean value theorem; matrix product, transpose $(AB)\T=B\T A\T$, inverse, $\det(AB)=\det A\det B$, $\det A\T=\det A$, and $\|\vect{v}\|^2=\vect{v}\T\vect{v}$.
+\end{itemize}
+\end{setup}
+
+\section*{One convention}
+
+Three rules hold on every page.
+
+\textbf{Rule 1: say what is random first.} Every topic opens with a setup box naming the population (a probability law), the sample $S$ drawn from it, and what is computed from $S$.
+
+\textbf{Rule 2: every $\E$, $\Var$ and $\Cov$ names in its subscript exactly what it averages over.} $\E_S$ averages over samples; $\E_{\vect{x},y,S}$ over a new input, its output and the sample; $\E_{y\given\vect{x}}$ over $y$ with $\vect{x}$ held fixed.
+
+\textbf{Rule 3: regression is stated given the data set $\X$.} A result is proved given $\X$, averaging over the noise only, then averaged over $\X$ by the tower rule, written out: $\E(\hat{\vect\beta})=\E_{\X}\big[\E_{y\given\X}(\hat{\vect\beta})\big]$.
+
+\section*{How to read a derivation}
+
+Every derivation is a two-column table: the maths on the left, the reason on the right. Each row does one step and continues the row above with $=$, $\le$ or $\iff$. A rule used in a row is quoted in full in its reason, with its conditions; an earlier result is named in words and restated, never pointed to. For example:
+
+\begin{deriv}
+\dl{\Var_X(X)=\E_X\big[(X-\mu)^2\big]}{definition of variance, with $\mu=\E_X X$}
+\dl{\phantom{\Var_X(X)}=\E_X\big[X^2-2\mu X+\mu^2\big]}{expand: $(a-b)^2=a^2-2ab+b^2$}
+\dl{\phantom{\Var_X(X)}=\E_X[X^2]-2\mu\,\E_X[X]+\mu^2}{linearity: $\E_X[aU+bV+c]=a\E_X U+b\E_X V+c$}
+\dl{\phantom{\Var_X(X)}=\E_X[X^2]-\mu^2}{$\E_X X=\mu$}
+\end{deriv}
+
+A long derivation is cut into \textbf{Step-1}, \textbf{Step-2}, \ldots, each a short table. Boxed formulas are the results to remember. Colours: blue boxes define, green boxes state results, purple boxes are worked examples.
+
+\section*{Notation}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.27\textwidth}p{0.67\textwidth}@{}}
+\toprule
+\textbf{Symbol} & \textbf{Meaning} \\
+\midrule
+$X_1,\dots,X_n$; $x_1,\dots,x_n$ & Part I: capitals are random, lower case are the observed values \\
+$\vect{x},\ y$ & from Part II on: a random input vector and a random output \\
+$\vect{v}$ (underlined) & a vector; $\vect{1}=(1,\dots,1)\T$, $I_n$ the $n\times n$ identity. Matrices are plain capitals: $A$, $\Sigma$, $P$, $H$ \\
+$\X$ & the design matrix, $n\times(k+1)$, random, first column $\vect{1}$ \\
+$k$; $p$; $n$ & regressors ($\beta_0,\dots,\beta_k$, residual df $n-k-1$); dimension in the multivariate and PCA chapters; sample size \\
+$S$ & the sample, $S\sim F^n$ \\
+$\theta,\ \Theta$ & a parameter and the parameter space \\
+$\hat\theta$, $\hat\theta_{\MLE}$ & an estimator of $\theta$; the maximum likelihood estimator \\
+$h_S$, $\bar h(\vect{x})$, $\bar y(\vect{x})$ & learned rule; average rule $\E_S[h_S(\vect{x})]$; regression function $\E_{y\given\vect{x}}(y)$ \\
+$\E$, $\Var$, $\Cov$ & expectation, variance (a matrix for a vector), covariance; the subscript names what is averaged over \\
+$s^2$; $\Sigma$, $\hat\Sigma$, $\hat\Sigma_{\MLE}$ & sample variance (divisor $n-1$); a variance matrix and its estimates (divisor $n-1$, $n$) \\
+$S_{xx}$, $S_{xy}$, $S_{yy}$ & $\sum(x_i-\bar x)^2$, $\sum(x_i-\bar x)(y_i-\bar y)$, $\sum(y_i-\bar y)^2$ \\
+$x_{ij}$ & observation $i$, variable $j$ \\
+$P_{\X}$, $\mathcal C(A)$, $A^{-}$ & projection $\X(\X\T\X)^{-1}\X\T$; column space; a generalised inverse \\
+$\chi^2_{d}(\lambda)$ & chi-square, $d$ degrees of freedom, non-centrality $\lambda=\vect{\mu}\T A\vect{\mu}$ \\
+$z_q$, $t_{d,q}$, $\chi^2_{d,q}$, $F_{d_1,d_2,q}$ & upper $q$ points: $P(Z>z_q)=q$ \\
+$X_t$, $W_t$ & a time series; white noise $W_t\sim WN(0,\sigma^2_W)$ \\
+$\gamma(h),\ \rho(h),\ \alpha(h)$ & autocovariance, autocorrelation, partial autocorrelation at lag $h$ \\
+$B,\ \nabla$ & backshift $BX_t=X_{t-1}$; difference $\nabla=1-B$ \\
+$\ind{A}$ & indicator: $1$ if $A$ is true, $0$ otherwise \\
+\bottomrule
+\end{tabular}
+\end{center}
