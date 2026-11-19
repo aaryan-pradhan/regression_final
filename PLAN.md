@@ -118,7 +118,7 @@ Macros live in `preamble.tex` (`\E`, `\Var`, `\Cov`, `\tr`, `\rank`, `\argmin`, 
 | 5 | Statistical learning | S → h_S; supervised/unsupervised; regression = E_{y|x}[y]; linear in β vs not; simulation; curse of dimensionality | old 05; BDA 89–94, 114–115; RTSM 136–157 | drafted |
 | 6 | Bias–variance decomposition | theorem, proof (S5 path), four examples | old 06; BDA 95–103 | drafted |
 | **III** | **Linear algebra & random vectors** | | | |
-| 7 | Vector spaces → projections | subspace, span, basis, S⊥, P_S idempotent with eigenvalues 0/1, C(A) facts, C(AAᵀ)=C(A), rank, g-inverse, A(AᵀA)⁻Aᵀ | RTSM 64–76, 210–222, 354–366 | todo |
+| 7 | Vector spaces → projections | subspace, span, basis, S⊥, P_S idempotent with eigenvalues 0/1, C(A) facts, C(AAᵀ)=C(A), rank, g-inverse, A(AᵀA)⁻Aᵀ | RTSM 64–76, 210–222, 354–366 | drafted |
 | 8 | Symmetric matrices & quadratic forms | eigen, AM/GM, spectral theorem, real eigenvalues, pd/psd, counterexamples, Cauchy–Schwarz and the extended form, maximisation lemma | BDA 122–176; RTSM 220–221 | todo |
 | 9 | Random vectors | E, Var algebra (AΣAᵀ, Cov(AX,BX)), Var psd, E(xᵀAx) = tr(AΣ) + μᵀAμ, x−μ ∈ C(Σ) a.s., Mahalanobis | RTSM 77–84, 223–231, 367–373 | todo |
 | 10 | Multivariate normal | definition via aᵀX, density, AX, BVN, ellipses, partition/marginals/independence, conditional mean = linear regression, χ²_p ellipsoid, MLE μ̂ and Σ̂, Wishart, multivariate CLT | BDA 116–140; RTSM 85–87, 230–233, 402–405 | todo |
