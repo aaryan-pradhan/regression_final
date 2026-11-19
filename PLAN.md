@@ -116,7 +116,7 @@ Macros live in `preamble.tex` (`\E`, `\Var`, `\Cov`, `\tr`, `\rank`, `\argmin`, 
 | 4 | Hypothesis testing | H₀/H₁, Type I/II, α, power, z/t one- and two-sample, pooled t, χ² goodness of fit | old 04; BDA 82–89; RTSM 408–409 | drafted |
 | **II** | **The learning view of regression** | | | |
 | 5 | Statistical learning | S → h_S; supervised/unsupervised; regression = E_{y|x}[y]; linear in β vs not; simulation; curse of dimensionality | old 05; BDA 89–94, 114–115; RTSM 136–157 | drafted |
-| 6 | Bias–variance decomposition | theorem, proof (S5 path), four examples | old 06; BDA 95–103 | todo |
+| 6 | Bias–variance decomposition | theorem, proof (S5 path), four examples | old 06; BDA 95–103 | drafted |
 | **III** | **Linear algebra & random vectors** | | | |
 | 7 | Vector spaces → projections | subspace, span, basis, S⊥, P_S idempotent with eigenvalues 0/1, C(A) facts, C(AAᵀ)=C(A), rank, g-inverse, A(AᵀA)⁻Aᵀ | RTSM 64–76, 210–222, 354–366 | todo |
 | 8 | Symmetric matrices & quadratic forms | eigen, AM/GM, spectral theorem, real eigenvalues, pd/psd, counterexamples, Cauchy–Schwarz and the extended form, maximisation lemma | BDA 122–176; RTSM 220–221 | todo |
