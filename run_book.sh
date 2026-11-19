@@ -26,6 +26,10 @@ for i in {$start..${#steps}}; do
   echo "== step $i: ${steps[$i]}  ($(date +%H:%M))"
   caffeinate -i claude -p "/euclid-book ${steps[$i]} $afk" \
     --permission-mode auto > build/logs/$i.log 2>&1
+  rc=$?
+  if [ $rc -ne 0 ] || grep -qiE "hit your .*limit|usage limit|rate limit" build/logs/$i.log; then
+    echo "!! step $i: session failed (exit $rc); see build/logs/$i.log, then ./run_book.sh $i"; exit 1
+  fi
   if ! make build check >/dev/null 2>&1; then
     echo "!! step $i: gates fail; see build/logs/$i.log, fix, then ./run_book.sh $i"; exit 1
   fi
