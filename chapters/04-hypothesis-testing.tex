@@ -1,0 +1,269 @@
+\chapter{Hypothesis testing}
+
+Chapter~3 gave a range of plausible values for a parameter; this chapter decides between two statements about it.
+
+\begin{setup}
+Population $F_X$, partly unknown; sample $S=(X_1,\dots,X_n)\sim F_X^{\,n}$. Goal: a yes/no decision about $F_X$ (``is $\mu=10$?'') from $S$. $P_\theta$ is a probability over samples when the true parameter is $\theta$.
+\end{setup}
+
+%=====================================================================
+\section{The language of testing}
+
+\begin{definition}[Hypotheses]
+A hypothesis is a statement about the population. The \dfn{null hypothesis} $H_0$ is the claim held by default, usually from domain knowledge. The \dfn{alternative hypothesis} $H_1$ is the claim that needs statistical evidence.
+\end{definition}
+
+\begin{definition}[Test]
+A \dfn{hypothesis test} decides between $H_0$ and $H_1$ from the sample. It uses a \dfn{test statistic} $W(S)$, a statistic whose law is known when $H_0$ is true, and a set $R$ of its values, the \dfn{rejection region} (critical region):
+\[
+  \boxed{\;\text{reject }H_0\text{ if }W(S)\in R;\qquad\text{otherwise do not reject }H_0.\;}
+\]
+The values outside $R$ form the \dfn{acceptance region}.
+\end{definition}
+
+\begin{definition}[Errors, level, power]
+The two ways to be wrong are named as follows.
+\begin{itemize}
+  \item A \dfn{Type I error} rejects a true $H_0$: probability $\alpha=P_\theta(W\in R)$, $\theta$ in $H_0$.
+  \item A \dfn{Type II error} keeps a false $H_0$: probability $\beta(\theta)=P_\theta(W\notin R)$, $\theta$ in $H_1$.
+  \item The \dfn{level of significance} is the largest Type~I error probability over $H_0$, also called the size of the critical region. A ``$5\%$ test'' has $\alpha=0.05$.
+  \item The \dfn{power of the test} at $\theta$ in $H_1$ is $1-\beta(\theta)=P_\theta(\text{reject }H_0)$.
+\end{itemize}
+\end{definition}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+ & $H_0$ true & $H_0$ false \\
+\midrule
+Do not reject $H_0$ & correct & Type~II error \\
+Reject $H_0$ & Type~I error & correct \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Both errors should be small, but they pull against each other: a smaller $R$ lowers $\alpha$ and raises $\beta$. So fix $\alpha$ small ($0.05$ or $0.01$), then, among tests of that level, take the one with the smallest $\beta$ (the largest power). A Type~I error is treated as the more serious: $H_0$ is left only on strong evidence.
+
+\begin{setup}[The recipe]
+Every test below is built in six steps.
+\begin{steps}
+  \item State $H_0$, $H_1$ and $\alpha$.
+  \item Pick an estimator of the unknown parameter.
+  \item Find its law.
+  \item Standardise it into a test statistic whose law under $H_0$ is fully known; an unknown $\sigma^2$ is replaced by its estimate, which turns $N(0,1)$ into $t$.
+  \item Take as $R$ the values unlikely under $H_0$ and likely under $H_1$, with probability $\alpha$ under $H_0$.
+  \item Compute the statistic from the data and decide.
+\end{steps}
+\end{setup}
+
+%=====================================================================
+\section{One mean}
+
+Throughout this section $X_1,\dots,X_n\iid N(\mu,\sigma^2)$ (a parametric test) and $\mu_0$ is a given number.
+
+\subsection*{$\sigma$ known: the $z$ test}
+
+\begin{theorem}[Two-sided $z$ test]
+Test $H_0:\mu=\mu_0$ against $H_1:\mu\ne\mu_0$, $\sigma$ known, with $Z_0=\sqrt n(\bar X-\mu_0)/\sigma$. Rejecting $H_0$ when
+\[
+  \boxed{\;|Z_0|>z_{\alpha/2}\;}
+\]
+gives a test of level $\alpha$.
+\end{theorem}
+\begin{proof}
+\begin{deriv}
+\dl{Z_0=\frac{\sqrt n(\bar X-\mu_0)}{\sigma}\sim N(0,1)\ \text{under}\ H_0}{Normal sample: $\bar X\sim N(\mu,\sigma^2/n)$; put $\mu=\mu_0$ and standardise}
+\dl{P_{\mu_0}(|Z_0|>z_{\alpha/2})=P(Z>z_{\alpha/2})+P(Z<-z_{\alpha/2})}{the two tails are disjoint}
+\dl{\phantom{P_{\mu_0}(|Z_0|>z_{\alpha/2})}=\tfrac\alpha2+\tfrac\alpha2=\alpha}{$P(Z>z_q)=q$; symmetry of $N(0,1)$\qedhere}
+\end{deriv}
+\end{proof}
+
+Three remarks.
+\begin{itemize}
+  \item \emph{Both tails:} $\mu>\mu_0$ pushes $Z_0$ up, $\mu<\mu_0$ pushes it down, and $H_1$ allows both.
+  \item \emph{Not Normal, $n$ large:} by the CLT $Z_0\approx N(0,1)$ under $H_0$, and the level is approximately $\alpha$.
+  \item \emph{Smaller level, smaller rejection region:} $\alpha_1<\alpha_2\Rightarrow z_{\alpha_1/2}>z_{\alpha_2/2}$; a $1\%$ test cuts at $2.576$, a $5\%$ test at $1.96$.
+\end{itemize}
+
+\begin{theorem}[One-sided $z$ tests]
+With $Z_0$ as above and $\sigma$ known, each test below has level $\alpha$:
+\[
+  \boxed{\;\begin{aligned}
+  H_0:\mu\le\mu_0\ \text{vs}\ H_1:\mu>\mu_0:&\quad\text{reject if }Z_0>z_\alpha;\\
+  H_0:\mu\ge\mu_0\ \text{vs}\ H_1:\mu<\mu_0:&\quad\text{reject if }Z_0<-z_\alpha.
+  \end{aligned}\;}
+\]
+Writing $H_0$ as $\mu=\mu_0$ gives the same level.
+\end{theorem}
+\begin{proof}
+The right tail; the left is its mirror image. Let $\mu$ be the true mean and $\delta=\sqrt n(\mu-\mu_0)/\sigma$.
+\begin{deriv}
+\dl{Z_0=\frac{\sqrt n(\bar X-\mu)}{\sigma}+\frac{\sqrt n(\mu-\mu_0)}{\sigma}=Z+\delta}{add and subtract $\mu$; $Z\sim N(0,1)$}
+\dl{\mu\le\mu_0\Rightarrow\delta\le0\Rightarrow Z_0\le Z}{$H_0$ true}
+\dl{P_\mu(Z_0>z_\alpha)\le P(Z>z_\alpha)=\alpha}{$\{Z_0>z_\alpha\}\subseteq\{Z>z_\alpha\}$}
+\dl{\mu=\mu_0\Rightarrow P_{\mu_0}(Z_0>z_\alpha)=\alpha}{$\delta=0$: the bound is attained, so the largest value over $H_0$ is $\alpha$\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[A two-sided $z$ test]
+$X\sim N(\mu,3^2)$, $n=16$, $\bar x=10.2$. Test $H_0:\mu=12$ against $H_1:\mu\ne12$ at $\alpha=0.05$.
+\begin{deriv}
+\dl{z_0=\frac{\sqrt{16}\,(10.2-12)}{3}=\frac{4\times(-1.8)}{3}=-2.4}{$Z_0=\sqrt n(\bar x-\mu_0)/\sigma$}
+\dl{|z_0|=2.4>1.96=z_{0.025}}{reject $H_0$ at $5\%$}
+\dl{|z_0|=2.4<2.576=z_{0.005}}{do not reject at $1\%$}
+\end{deriv}
+\end{example}
+
+\subsection*{Tests and intervals}
+
+\begin{result}[Test and interval are one thing]
+The level-$\alpha$ two-sided $z$ test rejects $H_0:\mu=\mu_0$ exactly when $\mu_0$ lies outside the $100(1-\alpha)\%$ confidence interval $\bar X\pm z_{\alpha/2}\sigma/\sqrt n$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{\text{do not reject}\iff-z_{\alpha/2}\le\frac{\sqrt n(\bar X-\mu_0)}{\sigma}\le z_{\alpha/2}}{acceptance region of the two-sided $z$ test}
+\dl{\iff-z_{\alpha/2}\frac{\sigma}{\sqrt n}\le\bar X-\mu_0\le z_{\alpha/2}\frac{\sigma}{\sqrt n}}{multiply by $\sigma/\sqrt n>0$}
+\dl{\iff\bar X-z_{\alpha/2}\frac{\sigma}{\sqrt n}\le\mu_0\le\bar X+z_{\alpha/2}\frac{\sigma}{\sqrt n}}{multiply by $-1$ (flips both); add $\bar X$\qedhere}
+\end{deriv}
+\end{proof}
+
+With $n=16$, $\sigma=3$, $\bar x=10.2$ the $95\%$ interval is $(8.73,11.67)$; it misses $12$, so the $5\%$ test rejects. The same holds for the $t$ test and the $t$ interval.
+
+\subsection*{Power}
+
+\begin{result}[Power of the two-sided $z$ test]
+If the true mean is $\mu$ and $\delta=\sqrt n(\mu-\mu_0)/\sigma$, the two-sided $z$ test has power
+\[
+  \boxed{\;P_\mu(\text{reject }H_0)=1-\Phi(z_{\alpha/2}-\delta)+\Phi(-z_{\alpha/2}-\delta).\;}
+\]
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{Z_0=Z+\delta,\quad Z\sim N(0,1)}{add and subtract $\mu$, as in the one-sided proof}
+\dl{P_\mu(|Z_0|>z_{\alpha/2})}{the power: the chance of rejecting at $\mu$}
+\dl{\quad=P(Z>z_{\alpha/2}-\delta)+P(Z<-z_{\alpha/2}-\delta)}{$Z_0>c\iff Z>c-\delta$; two disjoint tails}
+\dl{\quad=1-\Phi(z_{\alpha/2}-\delta)+\Phi(-z_{\alpha/2}-\delta)}{$\Phi$ is the $N(0,1)$ cdf\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[Power and its levers]
+$H_0:\mu=10$, $\sigma=3$, true mean $\mu=11.5$, so $\delta=\sqrt n\,(1.5)/3$.
+\begin{center}
+\begin{tabular}{@{}cccc@{}}
+\toprule
+$n$ & $\alpha$ & $\delta$ & power \\
+\midrule
+$16$ & $0.05$ & $2$ & $0.52$ \\
+$16$ & $0.01$ & $2$ & $0.28$ \\
+$36$ & $0.05$ & $3$ & $0.85$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+A smaller $\alpha$ costs power (fewer Type~I errors, more Type~II). A larger $n$ raises $\delta$ and the power: more data is the only way to lower both errors at once.
+\end{example}
+
+\subsection*{$\sigma$ unknown: the $t$ test}
+
+\begin{theorem}[One-sample $t$ test]
+Test $H_0:\mu=\mu_0$ against $H_1:\mu\ne\mu_0$, $\sigma$ unknown, with $T_0=\sqrt n(\bar X-\mu_0)/s$. Rejecting $H_0$ when
+\[
+  \boxed{\;|T_0|>t_{n-1,\alpha/2}\;}
+\]
+gives a test of level $\alpha$. One-sided: reject when $T_0>t_{n-1,\alpha}$ (for $H_1:\mu>\mu_0$) or $T_0<-t_{n-1,\alpha}$ (for $H_1:\mu<\mu_0$).
+\end{theorem}
+\begin{proof}
+\begin{deriv}
+\dl{T_0=\frac{\sqrt n(\bar X-\mu_0)}{s}\sim t_{n-1}\ \text{under}\ H_0}{the $t$ statistic: for a Normal sample, $\sqrt n(\bar X-\mu)/s\sim t_{n-1}$}
+\dl{P_{\mu_0}(|T_0|>t_{n-1,\alpha/2})=\tfrac\alpha2+\tfrac\alpha2=\alpha}{$t_{n-1}$ is symmetric about $0$}
+\end{deriv}
+The one-sided cases follow as for the $z$ test.
+\end{proof}
+
+\begin{example}[A $t$ test]
+$n=16$, $\bar x=10.2$, $s=3.0$. Test $H_0:\mu=12$ against $H_1:\mu\ne12$ at $\alpha=0.05$.
+\begin{deriv}
+\dl{t_0=\frac{4\times(-1.8)}{3.0}=-2.4}{$T_0=\sqrt n(\bar x-\mu_0)/s$}
+\dl{|t_0|=2.4>2.131=t_{15,0.025}}{reject $H_0$}
+\end{deriv}
+The $95\%$ $t$ interval $(8.60,11.80)$ misses $12$, as it must.
+\end{example}
+
+%=====================================================================
+\section{Two means: the pooled $t$ test}
+
+\begin{setup}[Two samples]
+$X_1,\dots,X_m\iid N(\mu_X,\sigma^2)$ and $Y_1,\dots,Y_n\iid N(\mu_Y,\sigma^2)$, the samples independent of each other, with one \emph{common} unknown $\sigma^2$; $s_X^2$, $s_Y^2$ have divisors $m-1$, $n-1$.
+\end{setup}
+
+\begin{definition}[Pooled variance]
+The \dfn{pooled variance} is
+\[
+  \boxed{\;s_p^2=\frac{(m-1)s_X^2+(n-1)s_Y^2}{m+n-2}=\frac{\sum_i(X_i-\bar X)^2+\sum_j(Y_j-\bar Y)^2}{m+n-2}.\;}
+\]
+\end{definition}
+
+\begin{theorem}[Pooled two-sample $t$ test]
+In the two-sample setup,
+\[
+  \boxed{\;T=\frac{(\bar X-\bar Y)-(\mu_X-\mu_Y)}{s_p\sqrt{\frac1m+\frac1n}}\sim t_{m+n-2}.\;}
+\]
+To test $H_0:\mu_X=\mu_Y$ against $H_1:\mu_X\ne\mu_Y$, compute $T_0=(\bar X-\bar Y)/\big(s_p\sqrt{1/m+1/n}\big)$ and reject when $|T_0|>t_{m+n-2,\alpha/2}$.
+\end{theorem}
+\begin{proof}
+\begin{deriv}
+\dl{\bar X-\bar Y\sim N\Big(\mu_X-\mu_Y,\ \sigma^2\big(\tfrac1m+\tfrac1n\big)\Big)}{$\bar X\sim N(\mu_X,\sigma^2/m)$, $\bar Y\sim N(\mu_Y,\sigma^2/n)$ independent: means and variances add}
+\dl{Z=\frac{(\bar X-\bar Y)-(\mu_X-\mu_Y)}{\sigma\sqrt{1/m+1/n}}\sim N(0,1)}{standardise}
+\dl{V=\frac{(m-1)s_X^2}{\sigma^2}+\frac{(n-1)s_Y^2}{\sigma^2}\sim\chi^2_{m-1+n-1}}{each is $\chi^2$ (Normal sample: $(n-1)s^2/\sigma^2\sim\chi^2_{n-1}$); independent $\chi^2$s add}
+\dl{V=\frac{(m+n-2)s_p^2}{\sigma^2}}{definition of $s_p^2$}
+\dl{Z\ \text{independent of}\ V}{Normal sample: $\bar X$ independent of $s_X^2$, $\bar Y$ of $s_Y^2$; the samples are independent}
+\dl{\frac{Z}{\sqrt{V/(m+n-2)}}=\frac{(\bar X-\bar Y)-(\mu_X-\mu_Y)}{\sigma\sqrt{1/m+1/n}}\cdot\frac{\sigma}{s_p}=T}{$\sigma$ cancels; $t_d$ is $Z/\sqrt{V/d}$ by definition}
+\end{deriv}
+Under $H_0$, $\mu_X-\mu_Y=0$ and $T=T_0$.
+\end{proof}
+
+The common $\sigma^2$ is what makes $\sigma$ cancel; with unequal variances there is no exact $t$ law. Three or more means need the $F$ distribution (analysis of variance), done for regression later.
+
+%=====================================================================
+\section{Does the data fit a model? The $\chi^2$ test}
+
+\begin{setup}[Counts in cells]
+Each of $n$ independent observations falls into one of $k$ cells. $H_0$: the cell probabilities are $p_1,\dots,p_k$ (given, $\sum_jp_j=1$); $H_1$: they are not. Observed count $O_j=\sum_{i=1}^n\ind{\text{observation }i\text{ in cell }j}$; expected count under $H_0$, $E_j=np_j$.
+\end{setup}
+
+\begin{definition}[Pearson's statistic]
+\dfn{Pearson's statistic} is
+\[
+  \boxed{\;X^2=\sum_{j=1}^k\frac{(O_j-E_j)^2}{E_j}.\;}
+\]
+\end{definition}
+
+\begin{theorem}[$\chi^2$ test of fit]
+Under $H_0$, for large $n$, $X^2\approx\chi^2_{k-1}$. Reject $H_0$ at level $\alpha$ when
+\[
+  \boxed{\;X^2>\chi^2_{k-1,\alpha}\;}
+\]
+(right tail only). With $r$ parameters of the model first estimated from the same data, the degrees of freedom are $k-1-r$.
+\end{theorem}
+\begin{proof}
+For $k=2$ cells; the general case needs the multivariate CLT. Write $p=p_1$, so $p_2=1-p$.
+\begin{deriv}
+\dl{O_2-E_2=(n-O_1)-n(1-p)=-(O_1-np)}{$O_2=n-O_1$, $E_2=n(1-p)$}
+\dl{X^2=(O_1-np)^2\Big(\frac{1}{np}+\frac{1}{n(1-p)}\Big)}{both squares equal $(O_1-np)^2$}
+\dl{\phantom{X^2}=(O_1-np)^2\,\frac{(1-p)+p}{np(1-p)}=\bigg(\frac{O_1-np}{\sqrt{np(1-p)}}\bigg)^2}{common denominator}
+\dl{\frac{O_1-np}{\sqrt{np(1-p)}}\approx N(0,1)}{CLT: $O_1$ is a sum of $n$ iid Bernoulli$(p)$, mean $np$, variance $np(1-p)$}
+\dl{X^2\approx\chi^2_1=\chi^2_{k-1}}{the square of an $N(0,1)$ is $\chi^2_1$ by definition\qedhere}
+\end{deriv}
+\end{proof}
+
+The counts add to $n$, so $k-1$ of them fix the last: in the proof two terms collapse into one square. $X^2$ measures distance from the model, so only large values count against it.
+
+\begin{example}[Is the die fair?]
+A die rolled $60$ times gives the counts $5,8,9,8,10,20$ for faces $1$ to $6$. Test fairness at $\alpha=0.05$.
+\begin{deriv}
+\dl{E_j=60\cdot\tfrac16=10,\quad j=1,\dots,6}{$H_0$: every $p_j=\frac16$}
+\dl{X^2=\frac{25+4+1+4+0+100}{10}=13.4}{$(O_j-E_j)^2$ for the six faces}
+\dl{13.4>11.07=\chi^2_{5,0.05}}{$k-1=5$: reject fairness}
+\end{deriv}
+Most of $X^2$ comes from face $6$: $20$ rolls instead of $10$.
+\end{example}
