@@ -1,0 +1,332 @@
+\chapter{Sampling distributions and intervals}
+
+Chapter~2 measured an estimator by its mean and variance; this chapter needs its whole law, to say how far off an estimate might be.
+
+\begin{setup}
+Population $X$ with mean $\mu$ and variance $\sigma^2$, often $N(\mu,\sigma^2)$; sample $S=(X_1,\dots,X_n)\sim F_X^{\,n}$, $\vect{X}=(X_1,\dots,X_n)\T$, with $\bar X=\frac1n\sum_iX_i$ and $s^2=\frac1{n-1}\sum_i(X_i-\bar X)^2$. The law of a statistic over samples is its \dfn{sampling distribution}; probabilities over samples are $P_S$.
+\end{setup}
+
+%=====================================================================
+\section{Three distributions built from the Normal}
+
+Throughout, $Z,Z_1,Z_2,\dots$ are independent $N(0,1)$.
+
+\begin{definition}[Chi-square distribution]
+For an integer $d\ge1$, the \dfn{chi-square distribution} with $d$ \dfn{degrees of freedom} is the law of
+\[
+  \boxed{\;V=Z_1^2+\dots+Z_d^2,\qquad V\sim\chi^2_d.\;}
+\]
+\end{definition}
+
+\begin{result}[Facts about $\chi^2_d$]
+For independent $V\sim\chi^2_d$ and $W\sim\chi^2_m$: $V\ge0$; $\boxed{\E_V[V]=d,\ \Var_V(V)=2d}$; $V+W\sim\chi^2_{d+m}$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{\E_Z[Z^2]=\Var_Z(Z)+(\E_Z Z)^2=1}{$\E_U[U^2]=\Var_U(U)+(\E_U U)^2$}
+\dl{\Var_Z(Z^2)=\E_Z[Z^4]-(\E_Z[Z^2])^2=3-1=2}{same rule for $U=Z^2$; $\E_Z[Z^4]=3$}
+\dl{\E_V[V]=d\cdot1,\qquad\Var_V(V)=d\cdot2}{$d$ independent copies of $Z^2$: means add, variances add}
+\end{deriv}
+$V\ge0$ as a sum of squares; $V+W$ is a sum of $d+m$ independent squared $N(0,1)$, which is $\chi^2_{d+m}$ by definition.
+\end{proof}
+
+The $\chi^2_d$ density is the Gamma with shape $d/2$ and scale $2$; every $\chi^2$ number comes from a table.
+
+\begin{definition}[$t$ distribution]
+For independent $Z\sim N(0,1)$ and $V\sim\chi^2_d$, the \dfn{$t$ distribution} with $d$ degrees of freedom is the law of
+\[
+  \boxed{\;T=\frac{Z}{\sqrt{V/d}},\qquad T\sim t_d.\;}
+\]
+\end{definition}
+
+\begin{result}[Facts about $t_d$]
+$t_d$ is symmetric about $0$; it has heavier tails than $N(0,1)$; and $t_d\to N(0,1)$ as $d\to\infty$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{(-Z,V)\ \text{has the law of}\ (Z,V)}{$-Z\sim N(0,1)$, still independent of $V$}
+\dl{-T=\frac{-Z}{\sqrt{V/d}}\ \text{has the law of}\ T}{the same function of pairs with the same law}
+\dl{\frac Vd=\frac1d\sum_{j=1}^dZ_j^2\to1\ \text{in probability}}{WLLN: an average of iid terms with mean $\E_Z[Z^2]=1$}
+\end{deriv}
+So $\sqrt{V/d}\to1$ and $T$ behaves like $Z$. For finite $d$, a small $\sqrt{V/d}$ makes $T$ large: heavier tails.
+\end{proof}
+
+\begin{definition}[$F$ distribution]
+For independent $V\sim\chi^2_{d_1}$ and $W\sim\chi^2_{d_2}$, the \dfn{$F$ distribution} with $(d_1,d_2)$ degrees of freedom is the law of
+\[
+  \boxed{\;F=\frac{V/d_1}{W/d_2},\qquad F\sim F_{d_1,d_2}.\;}
+\]
+\end{definition}
+
+\begin{result}[Facts about $F$]
+If $F\sim F_{d_1,d_2}$ then $\boxed{1/F\sim F_{d_2,d_1}}$; if $T\sim t_d$ then $\boxed{T^2\sim F_{1,d}}$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{\frac1F=\frac{W/d_2}{V/d_1}}{the $F$ definition with $V$ and $W$ swapped}
+\dl{T^2=\frac{Z^2/1}{V/d}}{square $T=Z/\sqrt{V/d}$; $Z^2\sim\chi^2_1$, independent of $V$\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{definition}[Upper points]
+For $0<q<1$, the \dfn{upper $q$ point} of a law is the $c$ with $P(\,\cdot>c)=q$: $z_q$ for $N(0,1)$, $t_{d,q}$ for $t_d$, $\chi^2_{d,q}$ for $\chi^2_d$, $F_{d_1,d_2,q}$ for $F_{d_1,d_2}$.
+\end{definition}
+
+By symmetry $P(-z_{\alpha/2}\le Z\le z_{\alpha/2})=1-\alpha$, and the same for $t_d$. $\chi^2_d$ is not symmetric, so both ends are read off: $P(\chi^2_{d,1-\alpha/2}\le V\le\chi^2_{d,\alpha/2})=1-\alpha$. Numbers used below: $z_{0.025}=1.96$, $t_{15,0.025}=2.131$, $\chi^2_{15,0.025}=27.488$, $\chi^2_{15,0.975}=6.262$.
+
+%=====================================================================
+\section{Sampling from a Normal population}
+
+For a Normal population the laws of $\bar X$ and $s^2$ are exact. The proof rotates the sample.
+
+\begin{definition}[Orthogonal matrix]
+A square $n\times n$ matrix $H$ is an \dfn{orthogonal matrix} if $HH\T=I_n$: its rows have length $1$ and are at right angles.
+\end{definition}
+
+\begin{lemma}[Facts about an orthogonal $H$]
+$\boxed{H\T H=I_n}$, so $\|H\vect{z}\|^2=\|\vect{z}\|^2$ for every $\vect{z}$; and $|\det H|=1$.
+\end{lemma}
+\begin{proof}
+\begin{deriv}
+\dl{HH\T=I_n\Rightarrow H\T=H^{-1}\Rightarrow H\T H=I_n}{a one-sided inverse of a square matrix is two-sided}
+\dl{\|H\vect{z}\|^2=\vect{z}\T H\T H\vect{z}=\vect{z}\T\vect{z}}{$\|\vect{v}\|^2=\vect{v}\T\vect{v}$, $(AB)\T=B\T A\T$}
+\dl{(\det H)^2=\det H\det H\T=\det(HH\T)=1}{$\det A\T=\det A$, $\det(AB)=\det A\det B$\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{lemma}[Rotating iid standard Normals]
+If $\vect{Z}=(Z_1,\dots,Z_n)\T$ has iid $N(0,1)$ entries and $H$ is orthogonal, then $\vect{Y}=H\vect{Z}$ has iid $N(0,1)$ entries.
+\end{lemma}
+\begin{proof}
+\begin{deriv}
+\dl{f_{\vect{Z}}(\vect{z})=\prod_{i=1}^n\frac{e^{-z_i^2/2}}{\sqrt{2\pi}}=(2\pi)^{-n/2}e^{-\|\vect{z}\|^2/2}}{independent: product of marginals; $\sum_iz_i^2=\|\vect{z}\|^2$}
+\dl{f_{\vect{Y}}(\vect{y})=f_{\vect{Z}}(H\T\vect{y})\,|\det H\T|}{change of variables, $\vect{z}=H^{-1}\vect{y}=H\T\vect{y}$}
+\dl{\phantom{f_{\vect{Y}}(\vect{y})}=(2\pi)^{-n/2}e^{-\|H\T\vect{y}\|^2/2}}{$|\det H\T|=|\det H|=1$}
+\dl{\phantom{f_{\vect{Y}}(\vect{y})}=(2\pi)^{-n/2}e^{-\|\vect{y}\|^2/2}}{$H\T$ is orthogonal too ($H\T H=I_n$): it keeps lengths}
+\end{deriv}
+This is the density of $n$ iid $N(0,1)$.
+\end{proof}
+
+We need an orthogonal matrix whose first row turns $\vect{Z}$ into $\sqrt n\,\bar Z$.
+
+\begin{lemma}[The Helmert matrix]
+Let $H$ have rows $\vect{h}_1\T=\frac1{\sqrt n}\vect{1}\T$ and, for $k=2,\dots,n$,
+\[
+  \vect{h}_k\T=\frac{1}{\sqrt{k(k-1)}}\big(\underbrace{1,\dots,1}_{k-1},\,-(k-1),\,0,\dots,0\big).
+\]
+Then $H$ is orthogonal.
+\end{lemma}
+\begin{proof}
+\begin{deriv}
+\dl{\vect{h}_1\T\vect{h}_1=n\cdot\frac1n=1}{$n$ entries $\frac1{\sqrt n}$}
+\dl{\vect{h}_k\T\vect{h}_k=\frac{(k-1)+(k-1)^2}{k(k-1)}=1}{$k-1$ ones and one $(k-1)^2$}
+\dl{\vect{h}_1\T\vect{h}_k=\frac{1}{\sqrt n}\cdot\frac{(k-1)-(k-1)}{\sqrt{k(k-1)}}=0}{$\frac1{\sqrt n}$ times the entry sum of $\vect{h}_k$}
+\dl{\vect{h}_j\T\vect{h}_k=\frac{1}{\sqrt{k(k-1)}}\,\vect{1}\T\vect{h}_j=0,\ \ 2\le j<k}{$\vect{h}_j$ lives in positions $1..j\le k-1$, where $\vect{h}_k$ is constant; entry sum of $\vect{h}_j$ is $0$\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{theorem}[Sampling from a Normal population]
+If $X_1,\dots,X_n\iid N(\mu,\sigma^2)$, $n\ge2$, then
+\[
+  \boxed{\;\text{(i) }\bar X\sim N\Big(\mu,\frac{\sigma^2}{n}\Big);\qquad\text{(ii) }\frac{(n-1)s^2}{\sigma^2}\sim\chi^2_{n-1};\qquad\text{(iii) }\bar X\text{ and }s^2\text{ are independent.}\;}
+\]
+\end{theorem}
+\begin{proof}
+Standardise: $\vect{Z}=(\vect{X}-\mu\vect{1})/\sigma$ has iid $N(0,1)$ entries, $\bar X=\mu+\sigma\bar Z$ and $\vect{X}-\bar X\vect{1}=\sigma(\vect{Z}-\bar Z\vect{1})$. Let $H$ be the Helmert matrix and $\vect{Y}=H\vect{Z}$; by the rotation lemma, $Y_1,\dots,Y_n$ are iid $N(0,1)$.
+\begin{deriv}
+\dl{Y_1=\vect{h}_1\T\vect{Z}=\frac1{\sqrt n}\vect{1}\T\vect{Z}=\sqrt n\,\bar Z}{first row of $H$; $\vect{1}\T\vect{Z}=n\bar Z$}
+\dl{\sum_{i=1}^nY_i^2=\|H\vect{Z}\|^2=\|\vect{Z}\|^2}{orthogonal $H$ keeps lengths}
+\dl{\phantom{\sum_{i=1}^nY_i^2}=\|\vect{Z}-\bar Z\vect{1}\|^2+n\bar Z^2}{sum-of-squares split, $c=0$: $\|\vect{z}\|^2=\|\vect{z}-\bar z\vect{1}\|^2+n\bar z^2$}
+\dl{\sum_{i=2}^nY_i^2=\|\vect{Z}-\bar Z\vect{1}\|^2=\frac{(n-1)s^2}{\sigma^2}}{subtract $Y_1^2=n\bar Z^2$; $\|\vect{X}-\bar X\vect{1}\|^2=(n-1)s^2$}
+\end{deriv}
+Read off: (i) $\bar X=\mu+\frac{\sigma}{\sqrt n}Y_1$ with $Y_1\sim N(0,1)$. (ii) $Y_2^2+\dots+Y_n^2$ is $\chi^2_{n-1}$ by definition. (iii) $\bar X$ is a function of $Y_1$ alone and $s^2$ of $Y_2,\dots,Y_n$ alone; functions of disjoint groups of independent variables are independent.
+\end{proof}
+
+The $n$ deviations $X_i-\bar X$ add to $0$, so only $n-1$ are free: one rotated coordinate holds the mean, the other $n-1$ hold the spread.
+
+\begin{corollary}[The $t$ statistic]
+Under the same conditions,
+\[
+  \boxed{\;T=\frac{\sqrt n\,(\bar X-\mu)}{s}\sim t_{n-1}.\;}
+\]
+\end{corollary}
+\begin{proof}
+\begin{deriv}
+\dl{T=\frac{\sqrt n(\bar X-\mu)/\sigma}{\sqrt{\big[(n-1)s^2/\sigma^2\big]/(n-1)}}}{divide top and bottom by $\sigma$}
+\end{deriv}
+The top is $N(0,1)$ by (i); the bottom is $\sqrt{V/(n-1)}$ with $V\sim\chi^2_{n-1}$ by (ii); they are independent by (iii). That is $t_{n-1}$ by definition.
+\end{proof}
+
+%=====================================================================
+\section{Confidence intervals}
+
+An estimate such as $\bar x=10.2$ says nothing about how far off it is. We want a short range, computed from the sample, that contains the parameter with a chosen probability.
+
+\begin{definition}[Confidence interval]
+For a parameter $\theta$ and $0<\alpha<1$, statistics $L(S)\le U(S)$ form a $100(1-\alpha)\%$ \dfn{confidence interval} for $\theta$ if
+\[
+  \boxed{\;P_S\big(L(S)\le\theta\le U(S)\big)=1-\alpha\quad\text{for every }\theta.\;}
+\]
+$1-\alpha$ is the \dfn{confidence level}.
+\end{definition}
+
+The interval is random; $\theta$ is fixed. ``$95\%$'' describes the method: over many samples, $95\%$ of the intervals contain $\theta$. A computed interval such as $(8.73,11.67)$ either contains $\mu$ or not, so the true value need not lie in a confidence interval.
+
+\begin{setup}[The recipe]
+Every interval below is built in three steps.
+\begin{steps}
+  \item Find a quantity of $\theta$ and the sample whose law is fully known (free of $\theta$).
+  \item Trap it between two upper points, with probability $1-\alpha$.
+  \item Rearrange until $\theta$ stands alone in the middle.
+\end{steps}
+\end{setup}
+
+\subsection*{The mean, $\sigma$ known}
+
+\begin{theorem}[Interval for $\mu$, $\sigma$ known]
+If $X_1,\dots,X_n\iid N(\mu,\sigma^2)$ with $\sigma$ known, a $100(1-\alpha)\%$ confidence interval for $\mu$ is
+\[
+  \boxed{\;\Big[\,\bar X-z_{\alpha/2}\frac{\sigma}{\sqrt n},\ \ \bar X+z_{\alpha/2}\frac{\sigma}{\sqrt n}\,\Big].\;}
+\]
+\end{theorem}
+\begin{proof}
+\begin{deriv}
+\dl{Z=\frac{\sqrt n(\bar X-\mu)}{\sigma}\sim N(0,1)}{Normal sample: $\bar X\sim N(\mu,\sigma^2/n)$; standardise}
+\dl{P_S\big(-z_{\alpha/2}\le Z\le z_{\alpha/2}\big)=1-\alpha}{symmetry of $N(0,1)$; $P(Z>z_q)=q$}
+\dl{-z_{\alpha/2}\le Z\le z_{\alpha/2}}{the event above}
+\dl{\iff-z_{\alpha/2}\frac{\sigma}{\sqrt n}\le\bar X-\mu\le z_{\alpha/2}\frac{\sigma}{\sqrt n}}{multiply by $\sigma/\sqrt n>0$}
+\dl{\iff\bar X-z_{\alpha/2}\frac{\sigma}{\sqrt n}\le\mu\le\bar X+z_{\alpha/2}\frac{\sigma}{\sqrt n}}{multiply by $-1$ (flips both); add $\bar X$}
+\end{deriv}
+The events are equal, so they have probability $1-\alpha$.
+\end{proof}
+
+Four remarks on this interval.
+\begin{itemize}
+  \item As a distance: the interval is $(\bar X-a,\bar X+a)$ with $P_S(|\bar X-\mu|<a)=1-\alpha$; since $P_S(|\bar X-\mu|<a)=P_S\big(|Z|<\frac{\sqrt n\,a}{\sigma}\big)$, set $\frac{\sqrt n\,a}{\sigma}=z_{\alpha/2}$.
+  \item Not Normal, $n$ large: the proof used only $Z\sim N(0,1)$, which the CLT gives approximately for any population with mean $\mu$ and variance $\sigma^2$; the level is then approximately $1-\alpha$.
+  \item The length $2z_{\alpha/2}\sigma/\sqrt n\to0$: more data, sharper interval. Open or closed ends give the same probability.
+  \item Any $d<c$ with $P(d\le Z\le c)=1-\alpha$ gives an interval of length $(c-d)\frac{\sigma}{\sqrt n}$; $d=-c$ is shortest, because the $N(0,1)$ density is highest at $0$.
+\end{itemize}
+
+\begin{example}[Known $\sigma$]
+$X\sim N(\mu,3^2)$, $n=16$, $\bar x=10.2$. Find the $95\%$ interval for $\mu$.
+\begin{deriv}
+\dl{z_{0.025}=1.96}{$1-\alpha=0.95$}
+\dl{\frac{\sqrt{16}\,a}{3}=1.96\iff a=1.47}{$P_S(|Z|<\sqrt n a/\sigma)=0.95$}
+\dl{(10.2-1.47,\ 10.2+1.47)=(8.73,\ 11.67)}{$\bar x\pm a$}
+\end{deriv}
+\end{example}
+
+\begin{example}[A 95\% interval for the correlation]
+As in Chapter~2: $(X_i,Y_i)$ iid bivariate Normal, means $0$, variances $1$, correlation $\rho$, and $W_n=\frac1n\sum_iX_iY_i$. For large $n$, find an approximate $95\%$ two-sided interval for $\rho$.
+\begin{steps}
+  \item \emph{Mean and variance of one product.} Write $Y=\rho X+cZ$, $c=\sqrt{1-\rho^2}$, $Z\sim N(0,1)$ independent of $X$.
+  \begin{deriv}
+  \dl{\E_{X,Y}[XY]=\rho}{Chapter~2: $\Cov_{X,Y}(X,Y)=\E_{X,Y}[XY]$ since the means are $0$}
+  \dl{X^2Y^2=\rho^2X^4+2\rho c\,X^3Z+c^2X^2Z^2}{expand $X^2(\rho X+cZ)^2$}
+  \dl{\E_{X,Z}[X^2Y^2]=3\rho^2+0+(1-\rho^2)\cdot1\cdot1}{$\E_X[X^4]=3$; independent: $\E_{X,Z}[X^3Z]=\E_X[X^3]\E_Z[Z]=0$}
+  \dl{\Var_{X,Y}(XY)=1+2\rho^2-\rho^2=1+\rho^2}{$\Var_U(U)=\E_U[U^2]-(\E_U U)^2$}
+  \end{deriv}
+  \item \emph{CLT.} $W_n$ averages $n$ iid copies of $XY$:
+  \[
+    W_n\approx N\Big(\rho,\ \frac{1+\rho^2}{n}\Big),\qquad P_S\Big(|W_n-\rho|\le1.96\sqrt{\tfrac{1+\rho^2}{n}}\Big)\approx0.95.
+  \]
+  \item \emph{The interval.} The half-width holds the unknown $\rho$; replace it by $W_n$, which changes the level only a little for large $n$:
+  \[
+    \boxed{\;W_n\pm1.96\sqrt{\frac{1+W_n^2}{n}}\;}
+  \]
+\end{steps}
+With $n=100$, $W_n=0.40$: $\sqrt{1.16/100}=0.1077$, half-width $1.96\times0.1077=0.211$, interval $(0.189,\ 0.611)$.
+\end{example}
+
+\subsection*{The mean, $\sigma$ unknown}
+
+\begin{theorem}[Interval for $\mu$, $\sigma$ unknown]
+If $X_1,\dots,X_n\iid N(\mu,\sigma^2)$ with $\mu,\sigma^2$ unknown, a $100(1-\alpha)\%$ confidence interval for $\mu$ is
+\[
+  \boxed{\;\Big[\,\bar X-t_{n-1,\alpha/2}\frac{s}{\sqrt n},\ \ \bar X+t_{n-1,\alpha/2}\frac{s}{\sqrt n}\,\Big].\;}
+\]
+\end{theorem}
+\begin{proof}
+\begin{deriv}
+\dl{T=\frac{\sqrt n(\bar X-\mu)}{s}\sim t_{n-1}}{the $t$ statistic of a Normal sample}
+\dl{P_S\big(-t_{n-1,\alpha/2}\le T\le t_{n-1,\alpha/2}\big)=1-\alpha}{$t_{n-1}$ is symmetric about $0$}
+\end{deriv}
+Rearrange exactly as for known $\sigma$, with $s>0$ in place of $\sigma$.
+\end{proof}
+
+\begin{example}[Unknown $\sigma$]
+$X\sim N(\mu,\sigma^2)$, $n=16$, $\bar x=10.2$, $s=3.0$. Find the $95\%$ interval for $\mu$.
+\begin{deriv}
+\dl{a=t_{15,0.025}\frac{s}{\sqrt n}=2.131\cdot\frac{3.0}{4}=1.598}{$t_{15,0.025}=2.131$}
+\dl{(10.2-1.598,\ 10.2+1.598)=(8.60,\ 11.80)}{$\bar x\pm a$}
+\end{deriv}
+Wider than with $\sigma=3$ known: the price of estimating $\sigma$. As $n$ grows, $t_{n-1}\to N(0,1)$ and the two intervals agree.
+\end{example}
+
+\subsection*{The variance}
+
+\begin{theorem}[Interval for $\sigma^2$]
+If $X_1,\dots,X_n\iid N(\mu,\sigma^2)$, a $100(1-\alpha)\%$ confidence interval for $\sigma^2$ is
+\[
+  \boxed{\;\bigg[\,\frac{(n-1)s^2}{\chi^2_{n-1,\alpha/2}},\ \ \frac{(n-1)s^2}{\chi^2_{n-1,1-\alpha/2}}\,\bigg].\;}
+\]
+\end{theorem}
+\begin{proof}
+Write $Q=(n-1)s^2/\sigma^2$, $a=\chi^2_{n-1,1-\alpha/2}$, $b=\chi^2_{n-1,\alpha/2}$.
+\begin{deriv}
+\dl{Q\sim\chi^2_{n-1}}{Normal sample, part (ii)}
+\dl{P_S(a\le Q\le b)=1-\alpha}{upper points of $\chi^2_{n-1}$}
+\dl{a\le Q\le b\iff\frac1b\le\frac{\sigma^2}{(n-1)s^2}\le\frac1a}{all positive: reciprocals flip both}
+\dl{\phantom{a\le Q\le b}\iff\frac{(n-1)s^2}{b}\le\sigma^2\le\frac{(n-1)s^2}{a}}{multiply by $(n-1)s^2>0$\qedhere}
+\end{deriv}
+\end{proof}
+
+The interval is not centred at $s^2$ ($\chi^2$ is not symmetric); the larger table point gives the lower end. Unlike the interval for $\mu$, it is not rescued by the CLT when the population is not Normal.
+
+\begin{example}[Interval for $\sigma^2$]
+$X\sim N(\mu,\sigma^2)$, $n=16$, $\bar x=9.259$, $s^2=3.96$. Find the $95\%$ interval for $\sigma^2$.
+\begin{deriv}
+\dl{(n-1)s^2=15\times3.96=59.4}{}
+\dl{\Big[\frac{59.4}{27.488},\ \frac{59.4}{6.262}\Big]=[2.16,\ 9.49]}{$\chi^2_{15,0.025}=27.488$, $\chi^2_{15,0.975}=6.262$}
+\end{deriv}
+$\bar x$ is not needed. The interval runs much further above $s^2=3.96$ than below it.
+\end{example}
+
+%=====================================================================
+\section{How large a sample?}
+
+Turn the question around: fix the accuracy and the confidence, and find the smallest $n$.
+
+\begin{lemma}[A bound on $f(1-f)$]
+For every $f\in[0,1]$, $\boxed{f(1-f)\le\frac14}$, with equality only at $f=\frac12$.
+\end{lemma}
+\begin{proof}
+\begin{deriv}
+\dl{\tfrac14-f(1-f)=f^2-f+\tfrac14=\big(f-\tfrac12\big)^2\ge0}{multiply out; complete the square\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[An election poll]
+A fraction $f$ of voters supports party A, $f$ unknown. Ask $n$ random voters, $X_j=\ind{\text{voter } j\text{ supports A}}\iid\text{Bernoulli}(f)$, and report $M_n=\frac1n\sum_jX_j$, with $\E_S[M_n]=f$, $\Var_S(M_n)=\frac{f(1-f)}{n}$. Goal: $P_S(|M_n-f|\ge0.01)\le0.05$.
+
+\textbf{With Chebyshev.}
+\begin{deriv}
+\dl{P_S(|M_n-f|\ge0.01)\le\frac{f(1-f)}{n(0.01)^2}}{Chebyshev: $P(|U-\E_U U|\ge\varepsilon)\le\Var_U(U)/\varepsilon^2$}
+\dl{\phantom{P_S(|M_n-f|\ge0.01)}\le\frac{1}{4n(0.01)^2}}{$f(1-f)\le\frac14$: free of the unknown $f$}
+\dl{\frac{1}{4n(0.01)^2}\le0.05\iff n\ge50{,}000}{solve for $n$}
+\end{deriv}
+
+\textbf{With the CLT.}
+\begin{deriv}
+\dl{P_S(|M_n-f|\ge0.01)\approx P\Big(|Z|\ge\frac{0.01\sqrt n}{\sqrt{f(1-f)}}\Big)}{CLT: $\frac{M_n-f}{\sqrt{f(1-f)/n}}\approx N(0,1)$}
+\dl{\phantom{P_S(|M_n-f|\ge0.01)}\le P\big(|Z|\ge0.02\sqrt n\big)}{$\sqrt{f(1-f)}\le\frac12$ raises the cut-off to $\ge0.02\sqrt n$; less tail}
+\dl{0.02\sqrt n\ge1.96\iff n\ge98^2=9{,}604}{$P(|Z|\ge1.96)=0.05$}
+\end{deriv}
+Chebyshev holds for every law with this variance, so it must allow for the worst; the CLT uses the near-Normal shape of $M_n$. The Chebyshev answer is guaranteed, the CLT answer approximate.
+\end{example}
+
+To be within $\varepsilon$ of $f$ with probability at least $1-\alpha$, the same steps give
+\[
+  \boxed{\;\text{Chebyshev: }n\ge\frac{1}{4\alpha\varepsilon^2},\qquad\text{CLT: }n\ge\Big(\frac{z_{\alpha/2}}{2\varepsilon}\Big)^2.\;}
+\]
