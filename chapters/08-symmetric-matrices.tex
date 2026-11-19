@@ -1,0 +1,387 @@
+\chapter{Symmetric matrices and quadratic forms}
+
+Chapter~7 met eigenvalues only for idempotent matrices, where they are $0$ or $1$; this chapter finds them for any square matrix, shows that symmetric matrices have the best possible ones, and uses them to sign and to maximise $\vect{x}\T A\vect{x}$.
+
+\begin{setup}
+A real $p\times p$ matrix $A$ and vectors $\vect{x}\in\R^p$. Two questions: when is $\vect{x}\T A\vect{x}>0$ for every $\vect{x}\ne\vect{0}$, and how large can $\vect{x}\T A\vect{x}$ be when $\|\vect{x}\|=1$. The variance matrices of later chapters are of this kind, and symmetric.
+\end{setup}
+
+%=====================================================================
+\section{Eigenvalues of a square matrix}
+
+\begin{definition}[Characteristic polynomial, multiplicities]
+The \dfn{characteristic polynomial} of $A$ is
+\[
+  \boxed{\;|\lambda I-A|=\lambda^p+a_{p-1}\lambda^{p-1}+\dots+a_1\lambda+a_0;\;}
+\]
+its roots are the eigenvalues of $A$. The \dfn{algebraic multiplicity} $\text{AM}(\lambda)$ is the number of times $\lambda$ appears as a root. The \dfn{eigenspace} of $\lambda$ is $\{\vect{e}:\ A\vect{e}=\lambda\vect{e}\}$, a subspace; its dimension, the number of linearly independent eigenvectors for $\lambda$, is the \dfn{geometric multiplicity} $\text{GM}(\lambda)$. Always $1\le\text{GM}(\lambda)\le\text{AM}(\lambda)$ (stated without proof).
+\end{definition}
+
+\begin{result}[Eigenvalues are the roots]
+$\lambda$ is an eigenvalue of $A$ exactly when $|\lambda I-A|=0$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{A\vect{e}=\lambda\vect{e},\ \vect{e}\ne\vect{0}}{definition of an eigenvalue}
+\dl{\iff(\lambda I-A)\vect{e}=\vect{0}\ \text{ for some }\vect{e}\ne\vect{0}}{move $A\vect{e}$ across; $\lambda\vect{e}=\lambda I\vect{e}$}
+\dl{\iff\lambda I-A\ \text{ is not invertible}}{a square $M$ is invertible exactly when $M\vect{e}=\vect{0}$ forces $\vect{e}=\vect{0}$}
+\dl{\iff|\lambda I-A|=0}{a square matrix is invertible exactly when its determinant is non-zero\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[Multiplicities]
+A characteristic polynomial $(\lambda-5)^2(\lambda-2)$ gives $\text{AM}(5)=2$, $\text{AM}(2)=1$. Two matrices with this polynomial differ in $\text{GM}(5)$.
+\begin{deriv}
+\dl{A=\operatorname{diag}(5,5,2):\ A-5I=\operatorname{diag}(0,0,-3)}{eigenspace of $5$: $\{(e_1,e_2,0)\}$, so $\text{GM}(5)=2$}
+\dl{A=\begin{pmatrix}5&1&0\\0&5&0\\0&0&2\end{pmatrix}:\ A-5I=\begin{pmatrix}0&1&0\\0&0&0\\0&0&-3\end{pmatrix}}{$(A-5I)\vect{e}=(e_2,0,-3e_3)\T=\vect{0}$ forces $e_2=e_3=0$: eigenspace $\{(e_1,0,0)\}$, $\text{GM}(5)=1$}
+\end{deriv}
+\end{example}
+
+\begin{definition}[Diagonalisable]
+$A$ is \dfn{diagonalisable} if $\boxed{A=PDP^{-1}}$ for an invertible $P$ and a diagonal $D$.
+\end{definition}
+
+\begin{result}[Enough eigenvectors diagonalise]
+If $A$ has $p$ linearly independent eigenvectors $\vect{e}_1,\dots,\vect{e}_p$, with eigenvalues $\lambda_1,\dots,\lambda_p$, then $A=PDP^{-1}$ with $P=[\vect{e}_1\ \cdots\ \vect{e}_p]$ and $D=\operatorname{diag}(\lambda_1,\dots,\lambda_p)$. Two facts, stated without proof, say when this happens.
+\begin{itemize}
+  \item Eigenvectors for distinct eigenvalues are linearly independent; so $p$ distinct eigenvalues make $A$ diagonalisable.
+  \item With repeated eigenvalues, $A$ is diagonalisable exactly when $\text{GM}(\lambda)=\text{AM}(\lambda)$ for every eigenvalue.
+\end{itemize}
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{AP=[A\vect{e}_1\ \cdots\ A\vect{e}_p]}{block multiplication: $A$ acts column by column}
+\dl{\quad=[\lambda_1\vect{e}_1\ \cdots\ \lambda_p\vect{e}_p]=PD}{each $\vect{e}_i$ is an eigenvector; $PD$ scales column $i$ by $\lambda_i$}
+\dl{A=PDP^{-1}}{the columns of $P$ are independent, so $P$ is invertible; multiply on the right by $P^{-1}$\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[Two warnings]
+A real matrix may have too few eigenvectors, or no real eigenvalue at all.
+\begin{deriv}
+\dl{A=\begin{pmatrix}1&1\\0&1\end{pmatrix}:\ |\lambda I-A|=(\lambda-1)^2}{$\text{AM}(1)=2$}
+\dl{(A-I)\vect{e}=(e_2,\,0)\T=\vect{0}\ \Rightarrow\ \vect{e}=(e_1,0)\T}{$\text{GM}(1)=1<2$: not diagonalisable}
+\dl{A=\begin{pmatrix}0&-1\\1&0\end{pmatrix}:\ |\lambda I-A|=\lambda^2+1}{no real root: no real eigenvalue}
+\end{deriv}
+$\begin{pmatrix}1&5\\0&1\end{pmatrix}$ fails in the same way as the first. Over the complex numbers every polynomial has a root, so complex eigenvalues always exist.
+\end{example}
+
+\begin{result}[Odd size: a real eigenvalue exists]
+If $p$ is odd, every real $p\times p$ matrix has a real eigenvalue.
+\end{result}
+\begin{proof}
+Let $q(\lambda)=|\lambda I-A|=\lambda^p+\dots+a_0$.
+\begin{deriv}
+\dl{q(\lambda)\to-\infty\ (\lambda\to-\infty),\quad q(\lambda)\to+\infty\ (\lambda\to+\infty)}{$p$ odd: the term $\lambda^p$ dominates and keeps its sign}
+\dl{q(\lambda_0)=0\ \text{ for some real }\lambda_0}{$q$ is continuous; intermediate value theorem\qedhere}
+\end{deriv}
+\end{proof}
+Complex roots of a real polynomial come in conjugate pairs, so an odd count leaves at least one real root. For $p=2$ it fails, as the second warning above shows.
+
+\begin{definition}[Trace]
+The \dfn{trace} of a square matrix is the sum of its diagonal: $\boxed{\tr A=\sum_ia_{ii}}$.
+\end{definition}
+
+\begin{result}[Trace of a product]
+For $A$ of size $m\times p$ and $B$ of size $p\times m$, $\boxed{\tr(AB)=\tr(BA)}$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{\tr(AB)=\textstyle\sum_{i=1}^m(AB)_{ii}}{definition of trace}
+\dl{\quad=\textstyle\sum_{i=1}^m\sum_{j=1}^pa_{ij}b_{ji}}{$(AB)_{ii}=\sum_ja_{ij}b_{ji}$}
+\dl{\quad=\textstyle\sum_{j=1}^p\sum_{i=1}^mb_{ji}a_{ij}}{swap the finite sums; $a_{ij}b_{ji}=b_{ji}a_{ij}$}
+\dl{\quad=\textstyle\sum_{j=1}^p(BA)_{jj}=\tr(BA)}{$(BA)_{jj}=\sum_ib_{ji}a_{ij}$\qedhere}
+\end{deriv}
+\end{proof}
+
+%=====================================================================
+\section{Symmetric matrices}
+
+\begin{theorem}[Spectral theorem]
+Let $A=A\T$ be a real $p\times p$ matrix. Four facts hold; (3) is stated without proof.
+\begin{itemize}
+  \item[(1)] Every eigenvalue of $A$ is real.
+  \item[(2)] Eigenvectors for distinct eigenvalues are orthogonal.
+  \item[(3)] $\text{GM}(\lambda)=\text{AM}(\lambda)$ for every eigenvalue, and orthonormal eigenvectors $\vect{e}_1,\dots,\vect{e}_p$ can be chosen. With $P=[\vect{e}_1\ \cdots\ \vect{e}_p]$ and $\Lambda=\operatorname{diag}(\lambda_1,\dots,\lambda_p)$ this gives the \dfn{spectral decomposition}
+  \[
+    \boxed{\;A=P\Lambda P\T=\sum_{i=1}^p\lambda_i\,\vect{e}_i\vect{e}_i\T,\qquad P\T P=PP\T=I_p.\;}
+  \]
+  \item[(4)] $\boxed{\tr A=\sum_i\lambda_i}$ and $\boxed{|A|=\prod_i\lambda_i}$.
+\end{itemize}
+\end{theorem}
+\begin{proof}
+\begin{steps}
+  \item \emph{(1) Real eigenvalues.} Let $A\vect{e}=\lambda\vect{e}$, $\vect{e}\ne\vect{0}$, both possibly complex; a bar is the complex conjugate.
+  \begin{deriv}
+  \dl{\bar{\vect{e}}\T A\vect{e}=\lambda\,\bar{\vect{e}}\T\vect{e}}{multiply $A\vect{e}=\lambda\vect{e}$ on the left by $\bar{\vect{e}}\T$}
+  \dl{A\bar{\vect{e}}=\bar\lambda\,\bar{\vect{e}}}{conjugate $A\vect{e}=\lambda\vect{e}$; $A$ is real}
+  \dl{\bar{\vect{e}}\T A=\bar\lambda\,\bar{\vect{e}}\T}{transpose; $A\T=A$}
+  \dl{\bar{\vect{e}}\T A\vect{e}=\bar\lambda\,\bar{\vect{e}}\T\vect{e}}{multiply on the right by $\vect{e}$}
+  \dl{(\lambda-\bar\lambda)\,\bar{\vect{e}}\T\vect{e}=0}{subtract the fourth row from the first}
+  \dl{\lambda=\bar\lambda}{$\bar{\vect{e}}\T\vect{e}=\sum_k|e_k|^2>0$ as $\vect{e}\ne\vect{0}$}
+  \end{deriv}
+  \item \emph{(2) Orthogonal eigenvectors.} Let $A\vect{e}_1=\lambda_1\vect{e}_1$, $A\vect{e}_2=\lambda_2\vect{e}_2$, $\lambda_1\ne\lambda_2$.
+  \begin{deriv}
+  \dl{\lambda_1\,\vect{e}_2\T\vect{e}_1=\vect{e}_2\T A\vect{e}_1}{multiply $A\vect{e}_1=\lambda_1\vect{e}_1$ on the left by $\vect{e}_2\T$}
+  \dl{\quad=(A\vect{e}_2)\T\vect{e}_1}{$\vect{e}_2\T A=\vect{e}_2\T A\T=(A\vect{e}_2)\T$, as $A\T=A$}
+  \dl{\quad=\lambda_2\,\vect{e}_2\T\vect{e}_1}{$A\vect{e}_2=\lambda_2\vect{e}_2$}
+  \dl{(\lambda_1-\lambda_2)\,\vect{e}_2\T\vect{e}_1=0\ \Rightarrow\ \vect{e}_2\T\vect{e}_1=0}{subtract; $\lambda_1\ne\lambda_2$}
+  \end{deriv}
+  \item \emph{(3) The decomposition.} For a repeated eigenvalue the eigenvectors need not be orthogonal (for $A=I$ every vector is one), but an orthonormal set can be chosen inside each eigenspace.
+  \begin{deriv}
+  \dl{AP=P\Lambda}{column $i$: $A\vect{e}_i=\lambda_i\vect{e}_i$}
+  \dl{P\T P=I_p}{$\vect{e}_i\T\vect{e}_j=\ind{i=j}$}
+  \dl{A=P\Lambda P\T}{$P$ square with $P\T P=I_p$, so $P^{-1}=P\T$ and $PP\T=I_p$; multiply on the right by $P\T$}
+  \dl{\quad=\textstyle\sum_i\lambda_i\,\vect{e}_i\vect{e}_i\T}{block multiplication: $P\Lambda=[\lambda_1\vect{e}_1\ \cdots\ \lambda_p\vect{e}_p]$ times the rows $\vect{e}_i\T$ of $P\T$}
+  \end{deriv}
+  \item \emph{(4) Trace and determinant.}
+  \begin{deriv}
+  \dl{\tr A=\tr\big(P(\Lambda P\T)\big)=\tr\big(\Lambda P\T P\big)}{$\tr(MN)=\tr(NM)$ with $M=P$, $N=\Lambda P\T$}
+  \dl{\quad=\tr\Lambda=\textstyle\sum_i\lambda_i}{$P\T P=I_p$}
+  \dl{|A|=|P|\,|\Lambda|\,|P\T|}{$\det(MN)=\det M\det N$}
+  \dl{\quad=|\Lambda|\,|PP\T|=\textstyle\prod_i\lambda_i}{regroup the numbers; $|PP\T|=|I_p|=1$; $\Lambda$ diagonal\qedhere}
+  \end{deriv}
+\end{steps}
+\end{proof}
+
+\begin{corollary}[Symmetric and idempotent: rank equals trace]
+If $P=P\T=P^2$, then $\boxed{\rank P=\tr P}$, the number of eigenvalues equal to $1$.
+\end{corollary}
+\begin{proof}
+Write $P=Q\Lambda Q\T$ by the spectral theorem, $Q\T Q=QQ\T=I$.
+\begin{deriv}
+\dl{\rank P=\rank\Lambda}{multiplying by an invertible matrix ($Q$ or $Q\T$) does not change the rank}
+\dl{\quad=\textstyle\sum_i\ind{\lambda_i=1}}{$\Lambda$ is diagonal with entries $0$ or $1$ (idempotent); its rank counts the non-zero ones}
+\dl{\quad=\textstyle\sum_i\lambda_i}{$\lambda_i\in\{0,1\}$, so $\lambda_i=\ind{\lambda_i=1}$}
+\dl{\quad=\tr P}{spectral theorem: $\tr P=\sum_i\lambda_i$\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[The rank of $P_A$ by the trace]
+$A$ is $n\times m$ with full column rank $m$; $P_A=A(A\T A)^{-1}A\T$ is symmetric and idempotent.
+\begin{deriv}
+\dl{\rank P_A=\tr\big(A\,[(A\T A)^{-1}A\T]\big)}{rank equals trace}
+\dl{\quad=\tr\big((A\T A)^{-1}A\T A\big)}{$\tr(MN)=\tr(NM)$ with $M=A$}
+\dl{\quad=\tr I_m=m}{$(A\T A)^{-1}A\T A=I_m$}
+\dl{\rank(I_n-P_A)=\tr I_n-\tr P_A=n-m}{$I_n-P_A$ is symmetric and idempotent; the trace is linear}
+\end{deriv}
+The same $m$ as from column spaces in Chapter~7. For $P_{\vect{1}}=\frac1n\vect{1}\vect{1}\T$: trace $n\cdot\frac1n=1$.
+\end{example}
+
+%=====================================================================
+\section{Quadratic forms and definiteness}
+
+\begin{definition}[Quadratic form, positive definite, positive semi-definite]
+For a symmetric $p\times p$ matrix $A$, the \dfn{quadratic form} of $A$ is
+\[
+  \boxed{\;\vect{x}\T A\vect{x}=\sum_{i=1}^p\sum_{j=1}^pa_{ij}x_ix_j;\;}
+\]
+with $A=I$ it is $\sum_ix_i^2=\|\vect{x}\|^2$. $A$ is \dfn{positive definite} (pd) if $\vect{x}\T A\vect{x}>0$ for every $\vect{x}\ne\vect{0}$, and \dfn{positive semi-definite} (psd) if $\vect{x}\T A\vect{x}\ge0$ for every $\vect{x}$.
+\end{definition}
+
+\begin{theorem}[Definiteness from the eigenvalues]
+Let $A$ be symmetric with eigenvalues $\lambda_1,\dots,\lambda_p$. Then
+\[
+  \boxed{\;A\text{ pd}\iff\text{every }\lambda_i>0;\qquad A\text{ psd}\iff\text{every }\lambda_i\ge0.\;}
+\]
+So a pd $A$ has $|A|>0$ and $\tr A>0$, is invertible, and $A^{-1}$ has eigenvector $\vect{e}$ with eigenvalue $1/\lambda$ whenever $A$ has eigenvector $\vect{e}$ with eigenvalue $\lambda$. A psd $A$ has $|A|\ge0$.
+\end{theorem}
+\begin{proof}
+\begin{steps}
+  \item \emph{The form in eigen-coordinates.} Write $A=P\Lambda P\T$ (spectral theorem) and put $\vect{c}=P\T\vect{x}$; $P$ is invertible, so $\vect{x}\ne\vect{0}\iff\vect{c}\ne\vect{0}$.
+  \begin{deriv}
+  \dl{\vect{x}\T A\vect{x}=\vect{x}\T P\Lambda P\T\vect{x}}{substitute $A$}
+  \dl{\quad=\vect{c}\T\Lambda\vect{c}}{$\vect{c}=P\T\vect{x}$, so $\vect{c}\T=\vect{x}\T P$}
+  \dl{\quad=\lambda_1c_1^2+\dots+\lambda_pc_p^2}{$\Lambda$ diagonal}
+  \end{deriv}
+  \item \emph{The equivalences.} If every $\lambda_i>0$, the sum is $>0$ for every $\vect{c}\ne\vect{0}$. Conversely, take $\vect{x}=\vect{e}_i$: then $\vect{c}$ is the $i$th unit vector and $\vect{e}_i\T A\vect{e}_i=\lambda_i$, so pd forces $\lambda_i>0$. The same with $\ge$ for psd.
+  \item \emph{The consequences.}
+  \begin{deriv}
+  \dl{|A|=\textstyle\prod_i\lambda_i>0,\quad\tr A=\sum_i\lambda_i>0}{spectral theorem; every $\lambda_i>0$}
+  \dl{A\vect{e}=\lambda\vect{e}\ \Rightarrow\ \vect{e}=\lambda A^{-1}\vect{e}}{$|A|\ne0$, so $A^{-1}$ exists; multiply on the left by $A^{-1}$}
+  \dl{\quad\Rightarrow\ A^{-1}\vect{e}=\tfrac1\lambda\vect{e}}{divide by $\lambda>0$}
+  \dl{A\text{ psd}\ \Rightarrow\ |A|=\textstyle\prod_i\lambda_i\ge0}{every $\lambda_i\ge0$\qedhere}
+  \end{deriv}
+\end{steps}
+\end{proof}
+Directly: an eigenpair gives $\lambda=\vect{e}\T A\vect{e}/\vect{e}\T\vect{e}$, which is $>0$ when $A$ is pd.
+
+\begin{result}[$A\T A$ is psd; pd under full column rank]
+For any $n\times m$ matrix $A$, $A\T A$ is psd, and it is pd exactly when $A$ has full column rank $m$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{\vect{a}\T A\T A\vect{a}=(A\vect{a})\T(A\vect{a})}{$(A\vect{a})\T=\vect{a}\T A\T$}
+\dl{\quad=\|A\vect{a}\|^2\ge0}{$\|\vect{v}\|^2=\vect{v}\T\vect{v}$}
+\dl{\|A\vect{a}\|^2=0\iff A\vect{a}=\textstyle\sum_ja_j\vect{a}_j=\vect{0}}{$\vect{a}_j$ the columns of $A$}
+\end{deriv}
+The columns are linearly independent (full column rank) exactly when $A\vect{a}=\vect{0}$ forces $\vect{a}=\vect{0}$, that is, exactly when the form is $>0$ for every $\vect{a}\ne\vect{0}$.
+\end{proof}
+In regression, $\X\T\X$ is pd when $\X$ has full column rank $k+1$.
+
+%=====================================================================
+\section{Pitfalls: non-symmetric matrices}
+
+The eigenvalue test needs symmetry. For a non-symmetric $M$, nothing about $\vect{x}\T M\vect{x}$ can be read off the eigenvalues.
+
+\begin{example}[Eigenvalues do not decide the sign]
+Four $2\times2$ cases.
+\begin{itemize}
+  \item $\begin{pmatrix}1&2\\0&1\end{pmatrix}$: two positive real eigenvalues ($1,1$), yet not symmetric.
+  \item $\begin{pmatrix}-2&0\\0&-3\end{pmatrix}$: real eigenvalues, not pd: $\vect{x}=(1,0)\T$ gives $-2$.
+  \item $M=\begin{pmatrix}1&-5\\0&1\end{pmatrix}$: $\lambda_1=\lambda_2=1$, but $(1,1)\,M\,(1,1)\T=1-5+1=-3<0$.
+  \item $\begin{pmatrix}1&1\\0&1\end{pmatrix}$: a repeated eigenvalue and no eigenbasis, yet $x_1^2+x_1x_2+x_2^2=(x_1+\tfrac{x_2}2)^2+\tfrac34x_2^2>0$ for $\vect{x}\ne\vect{0}$.
+\end{itemize}
+\end{example}
+
+\begin{result}[Test the symmetric part]
+For any square $M$, put $S=\tfrac12(M+M\T)$. Then $\boxed{\vect{x}\T M\vect{x}=\vect{x}\T S\vect{x}}$, so $\vect{x}\T M\vect{x}>0$ for every $\vect{x}\ne\vect{0}$ exactly when $S$ is pd, that is, when every eigenvalue of $S$ is $>0$.
+\end{result}
+\begin{proof}
+Put $K=\tfrac12(M-M\T)$, so $M=S+K$ and $K\T=-K$.
+\begin{deriv}
+\dl{\vect{x}\T K\vect{x}=(\vect{x}\T K\vect{x})\T}{a $1\times1$ matrix equals its transpose}
+\dl{\quad=\vect{x}\T K\T\vect{x}=-\vect{x}\T K\vect{x}}{$(MNL)\T=L\T N\T M\T$; $K\T=-K$}
+\dl{\vect{x}\T K\vect{x}=0}{a number equal to its negative is $0$}
+\dl{\vect{x}\T M\vect{x}=\vect{x}\T S\vect{x}+\vect{x}\T K\vect{x}=\vect{x}\T S\vect{x}}{$M=S+K$; $S$ is symmetric, so the eigenvalue test applies to it\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{example}[The two last cases, settled]
+Symmetric parts and their eigenvalues ($\lambda=s_{11}\pm s_{12}$ for $s_{11}=s_{22}$).
+\begin{deriv}
+\dl{M=\begin{pmatrix}1&-5\\0&1\end{pmatrix}:\ S=\begin{pmatrix}1&-2.5\\-2.5&1\end{pmatrix}}{eigenvalues $1\pm2.5=3.5,\ -1.5$: not pd}
+\dl{M=\begin{pmatrix}1&1\\0&1\end{pmatrix}:\ S=\begin{pmatrix}1&0.5\\0.5&1\end{pmatrix}}{eigenvalues $1\pm0.5=1.5,\ 0.5$: pd}
+\end{deriv}
+\end{example}
+
+%=====================================================================
+\section{The square root of a pd matrix}
+
+\begin{definition}[Symmetric square root]
+For a pd $B=P\Lambda P\T=\sum_i\lambda_i\vect{e}_i\vect{e}_i\T$, the \dfn{symmetric square root} is
+\[
+  \boxed{\;B^{1/2}=L=P\Lambda^{1/2}P\T=\sum_i\sqrt{\lambda_i}\,\vect{e}_i\vect{e}_i\T,\qquad L^{-1}=P\Lambda^{-1/2}P\T=\sum_i\tfrac1{\sqrt{\lambda_i}}\,\vect{e}_i\vect{e}_i\T,\;}
+\]
+with $\Lambda^{\pm1/2}=\operatorname{diag}(\lambda_i^{\pm1/2})$, real because every $\lambda_i>0$.
+\end{definition}
+
+\begin{result}[Properties of $L$]
+$L=L\T$, $LL=B$, the second matrix above is indeed the inverse of $L$, and $L^{-1}L^{-1}=B^{-1}$.
+\end{result}
+\begin{proof}
+\begin{deriv}
+\dl{L\T=(P\Lambda^{1/2}P\T)\T=P\Lambda^{1/2}P\T=L}{$(MNL)\T=L\T N\T M\T$; $\Lambda^{1/2}$ diagonal}
+\dl{LL=P\Lambda^{1/2}P\T P\Lambda^{1/2}P\T}{multiply}
+\dl{\quad=P\Lambda P\T=B}{$P\T P=I$; $\Lambda^{1/2}\Lambda^{1/2}=\Lambda$}
+\dl{L\,(P\Lambda^{-1/2}P\T)=P\Lambda^{1/2}\Lambda^{-1/2}P\T=PP\T=I}{$P\T P=I$; then $PP\T=I$}
+\dl{L^{-1}L^{-1}=P\Lambda^{-1}P\T}{as for $LL$}
+\dl{B\,(P\Lambda^{-1}P\T)=P\Lambda\Lambda^{-1}P\T=I}{so $P\Lambda^{-1}P\T=B^{-1}$\qedhere}
+\end{deriv}
+\end{proof}
+
+%=====================================================================
+\section{Cauchy--Schwarz and the maximisation lemma}
+
+\begin{theorem}[Cauchy--Schwarz inequality]
+For $\vect{b},\vect{d}\in\R^p$,
+\[
+  \boxed{\;(\vect{b}\T\vect{d})^2\le(\vect{b}\T\vect{b})(\vect{d}\T\vect{d}),\;}
+\]
+with equality exactly when $\vect{b}=c\,\vect{d}$ (or $\vect{d}=c\,\vect{b}$) for some number $c$.
+\end{theorem}
+\begin{proof}
+If $\vect{d}=\vect{0}$ both sides are $0$ and $\vect{d}=0\cdot\vect{b}$. Let $\vect{d}\ne\vect{0}$ and $x\in\R$.
+\begin{steps}
+  \item \emph{Complete the square.}
+  \begin{deriv}
+  \dl{\|\vect{b}-x\vect{d}\|^2=\vect{b}\T\vect{b}-2x\,\vect{b}\T\vect{d}+x^2\,\vect{d}\T\vect{d}}{multiply out; $\vect{d}\T\vect{b}=\vect{b}\T\vect{d}$}
+  \dl{\quad=\vect{b}\T\vect{b}-\frac{(\vect{b}\T\vect{d})^2}{\vect{d}\T\vect{d}}+\vect{d}\T\vect{d}\Big(x-\frac{\vect{b}\T\vect{d}}{\vect{d}\T\vect{d}}\Big)^2}{complete the square in $x$; $\vect{d}\T\vect{d}>0$}
+  \end{deriv}
+  \item \emph{Not proportional: strict.} If $\vect{b}\ne x\vect{d}$ for every $x$, the left side is $>0$ for every $x$.
+  \begin{deriv}
+  \dl{0<\vect{b}\T\vect{b}-\frac{(\vect{b}\T\vect{d})^2}{\vect{d}\T\vect{d}}}{take $x=\vect{b}\T\vect{d}/\vect{d}\T\vect{d}$: the square vanishes}
+  \dl{(\vect{b}\T\vect{d})^2<(\vect{b}\T\vect{b})(\vect{d}\T\vect{d})}{multiply by $\vect{d}\T\vect{d}>0$}
+  \end{deriv}
+  \item \emph{Proportional: equal.}
+  \begin{deriv}
+  \dl{\vect{b}=c\vect{d}\ \Rightarrow\ (\vect{b}\T\vect{d})^2=c^2(\vect{d}\T\vect{d})^2=(\vect{b}\T\vect{b})(\vect{d}\T\vect{d})}{$\vect{b}\T\vect{b}=c^2\,\vect{d}\T\vect{d}$\qedhere}
+  \end{deriv}
+\end{steps}
+\end{proof}
+
+\begin{theorem}[Extended Cauchy--Schwarz]
+For $B$ pd ($p\times p$) and $\vect{b},\vect{d}\in\R^p$,
+\[
+  \boxed{\;(\vect{b}\T\vect{d})^2\le(\vect{b}\T B\vect{b})(\vect{d}\T B^{-1}\vect{d}),\;}
+\]
+with equality exactly when $\vect{b}=c\,B^{-1}\vect{d}$ (or $\vect{d}=c\,B\vect{b}$).
+\end{theorem}
+\begin{proof}
+Let $L=B^{1/2}$, the symmetric square root.
+\begin{deriv}
+\dl{\vect{b}\T\vect{d}=\vect{b}\T LL^{-1}\vect{d}}{$LL^{-1}=I$}
+\dl{\quad=(L\vect{b})\T(L^{-1}\vect{d})}{$L\T=L$}
+\dl{(\vect{b}\T\vect{d})^2\le(L\vect{b})\T(L\vect{b})\,(L^{-1}\vect{d})\T(L^{-1}\vect{d})}{Cauchy--Schwarz: $(\vect{u}\T\vect{v})^2\le(\vect{u}\T\vect{u})(\vect{v}\T\vect{v})$, with $\vect{u}=L\vect{b}$, $\vect{v}=L^{-1}\vect{d}$}
+\dl{\quad=(\vect{b}\T B\vect{b})(\vect{d}\T B^{-1}\vect{d})}{$L\T L=LL=B$; $(L^{-1})\T L^{-1}=L^{-1}L^{-1}=B^{-1}$}
+\dl{\text{equality}\iff L\vect{b}=c\,L^{-1}\vect{d}\iff\vect{b}=c\,B^{-1}\vect{d}}{equality case of Cauchy--Schwarz; multiply by $L^{-1}$\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{theorem}[Maximisation lemma]
+For $B$ pd and a fixed $\vect{d}\in\R^p$,
+\[
+  \boxed{\;\max_{\vect{x}\ne\vect{0}}\frac{(\vect{x}\T\vect{d})^2}{\vect{x}\T B\vect{x}}=\vect{d}\T B^{-1}\vect{d},\;}
+\]
+attained at $\vect{x}=c\,B^{-1}\vect{d}$ for any $c\ne0$.
+\end{theorem}
+\begin{proof}
+\begin{deriv}
+\dl{(\vect{x}\T\vect{d})^2\le(\vect{x}\T B\vect{x})(\vect{d}\T B^{-1}\vect{d})}{extended Cauchy--Schwarz with $\vect{b}=\vect{x}$}
+\dl{\frac{(\vect{x}\T\vect{d})^2}{\vect{x}\T B\vect{x}}\le\vect{d}\T B^{-1}\vect{d}}{divide by $\vect{x}\T B\vect{x}>0$ ($B$ pd, $\vect{x}\ne\vect{0}$)}
+\dl{\text{equality at }\vect{x}=c\,B^{-1}\vect{d}}{equality case of extended Cauchy--Schwarz\qedhere}
+\end{deriv}
+\end{proof}
+
+\begin{theorem}[Maximising a quadratic form on the unit sphere]
+Let $B$ be pd with eigenvalues $\lambda_1\ge\lambda_2\ge\dots\ge\lambda_p>0$ and orthonormal eigenvectors $\vect{e}_1,\dots,\vect{e}_p$. Then
+\[
+  \boxed{\;\begin{aligned}
+  \max_{\vect{x}\ne\vect{0}}\frac{\vect{x}\T B\vect{x}}{\vect{x}\T\vect{x}}&=\lambda_1\ \ (\text{at }\vect{e}_1),\qquad
+  \min_{\vect{x}\ne\vect{0}}\frac{\vect{x}\T B\vect{x}}{\vect{x}\T\vect{x}}=\lambda_p\ \ (\text{at }\vect{e}_p),\\
+  \max_{\vect{x}\ne\vect{0},\ \vect{x}\perp\vect{e}_1,\dots,\vect{e}_k}\frac{\vect{x}\T B\vect{x}}{\vect{x}\T\vect{x}}&=\lambda_{k+1}\ \ (\text{at }\vect{e}_{k+1}),\quad k=1,\dots,p-1.
+  \end{aligned}\;}
+\]
+The ratio does not change when $\vect{x}$ is rescaled, so these are also the extremes of $\vect{x}\T B\vect{x}$ over $\|\vect{x}\|=1$.
+\end{theorem}
+\begin{proof}
+Let $P=[\vect{e}_1\ \cdots\ \vect{e}_p]$, so $B=P\Lambda P\T$ and $P\T P=PP\T=I$, and put $\vect{y}=P\T\vect{x}$; then $\vect{x}=P\vect{y}$ and $\vect{x}\ne\vect{0}\iff\vect{y}\ne\vect{0}$.
+\begin{steps}
+  \item \emph{The ratio in eigen-coordinates.}
+  \begin{deriv}
+  \dl{\frac{\vect{x}\T B\vect{x}}{\vect{x}\T\vect{x}}=\frac{\vect{x}\T P\Lambda P\T\vect{x}}{\vect{y}\T P\T P\vect{y}}}{substitute $B$ above, $\vect{x}=P\vect{y}$ below}
+  \dl{\quad=\frac{\vect{y}\T\Lambda\vect{y}}{\vect{y}\T\vect{y}}=\frac{\sum_i\lambda_iy_i^2}{\sum_iy_i^2}}{$P\T\vect{x}=\vect{y}$; $P\T P=I$; $\Lambda$ diagonal}
+  \end{deriv}
+  \item \emph{Maximum and minimum.}
+  \begin{deriv}
+  \dl{\lambda_p\textstyle\sum_iy_i^2\le\sum_i\lambda_iy_i^2\le\lambda_1\sum_iy_i^2}{$\lambda_p\le\lambda_i\le\lambda_1$ and $y_i^2\ge0$}
+  \dl{\vect{x}=\vect{e}_1\ \Rightarrow\ \vect{y}=(1,0,\dots,0)\T,\ \text{ratio}=\lambda_1}{$\vect{y}=P\T\vect{e}_1$, $\vect{e}_i\T\vect{e}_1=\ind{i=1}$}
+  \end{deriv}
+  Likewise $\vect{x}=\vect{e}_p$ gives $\lambda_p$.
+  \item \emph{Orthogonal to the first $k$.}
+  \begin{deriv}
+  \dl{\vect{e}_i\T\vect{x}=\vect{e}_i\T\textstyle\sum_jy_j\vect{e}_j=y_i}{$\vect{x}=P\vect{y}=\sum_jy_j\vect{e}_j$; orthonormal}
+  \dl{\vect{x}\perp\vect{e}_1,\dots,\vect{e}_k\iff y_1=\dots=y_k=0}{previous row}
+  \dl{\text{ratio}=\frac{\sum_{i>k}\lambda_iy_i^2}{\sum_{i>k}y_i^2}\le\lambda_{k+1}}{$\lambda_i\le\lambda_{k+1}$ for $i>k$}
+  \end{deriv}
+  Equality at $\vect{x}=\vect{e}_{k+1}$, as in Step-2.\qedhere
+\end{steps}
+\end{proof}
+
+\begin{example}[A diagonal $B$]
+$B=\operatorname{diag}(1,2)$: $\lambda_1=2$ with $\vect{e}_1=(0,1)\T$, $\lambda_2=1$ with $\vect{e}_2=(1,0)\T$.
+\begin{deriv}
+\dl{\frac{\vect{x}\T B\vect{x}}{\vect{x}\T\vect{x}}=\frac{x_1^2+2x_2^2}{x_1^2+x_2^2}\in[1,2]}{the ratio is a weighted average of $1$ and $2$}
+\end{deriv}
+The maximum $2$ is at $(0,1)\T$, the minimum $1$ at $(1,0)\T$.
+\end{example}
